@@ -1,0 +1,9 @@
+C:\Users\Denis\RiderProjects\second_practice\AS practice\bin\Debug\AS_practice.exe.config
+C:\Users\Denis\RiderProjects\second_practice\AS practice\bin\Debug\AS_practice.exe
+C:\Users\Denis\RiderProjects\second_practice\AS practice\bin\Debug\AS_practice.pdb
+C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS practice.csproj.AssemblyReference.cache
+C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS_practice.Properties.Resources.resources
+C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS practice.csproj.GenerateResource.cache
+C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS practice.csproj.CoreCompileInputs.cache
+C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS_practice.exe
+C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS_practice.pdb
