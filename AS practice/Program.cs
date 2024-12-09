@@ -3,20 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AS_practice.DataAccess;
 
 namespace AS_practice
 {
-    static class Program
+    class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            string connectionString = "Server=mysql.localhost;Port=3305;Database=AS;Uid=root;Pwd=кщще;";
+            var dbManager = new DatabaseManager(connectionString);
+            
+            dbManager.TestConnection();
+            Console.WriteLine("System is prepared for work");
         }
     }
 }
