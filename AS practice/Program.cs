@@ -14,8 +14,10 @@ namespace AS_practice
             string connectionString = "Server=mysql.localhost;Port=3305;Database=AS;Uid=root;Pwd=кщще;";
             var dbManager = new DatabaseManager(connectionString);
             
+            /*
             dbManager.TestConnection();
             Console.WriteLine("System is prepared for work");
+            */
         }
     }
 }

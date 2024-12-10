@@ -99,16 +99,23 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="DataAccess\AdminManager.cs" />
+        <Compile Include="DataAccess\CourseManager.cs" />
         <Compile Include="DataAccess\DatabaseManager.cs" />
+        <Compile Include="DataAccess\GradeManager.cs" />
+        <Compile Include="DataAccess\LecturerManager.cs" />
+        <Compile Include="DataAccess\StudentManager.cs" />
         <Compile Include="Form1.cs">
             <SubType>Form</SubType>
         </Compile>
         <Compile Include="Form1.Designer.cs">
             <DependentUpon>Form1.cs</DependentUpon>
         </Compile>
+        <Compile Include="Models\Admin.cs" />
         <Compile Include="Models\Course.cs" />
         <Compile Include="Models\Grade.cs" />
         <Compile Include="Models\Lecturer.cs" />
+        <Compile Include="Models\LecturerCourse.cs" />
         <Compile Include="Models\Student.cs" />
         <Compile Include="Models\StudentGroup.cs" />
         <Compile Include="Models\User.cs" />
