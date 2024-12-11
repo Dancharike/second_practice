@@ -117,7 +117,9 @@
         <Compile Include="Form1.Designer.cs">
             <DependentUpon>Form1.cs</DependentUpon>
         </Compile>
-        <Compile Include="MainForm.cs" />
+        <Compile Include="FrontEnd\MainForm.cs" />
+        <Compile Include="FrontEnd\ManageCoursesForm.cs" />
+        <Compile Include="FrontEnd\ManageStudentsForm.cs" />
         <Compile Include="Models\Admin.cs" />
         <Compile Include="Models\Course.cs" />
         <Compile Include="Models\Grade.cs" />

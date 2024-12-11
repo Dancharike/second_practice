@@ -11,11 +11,7 @@ namespace AS_practice
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-            string connectionString = "Server=mysql.localhost;Port=3305;Database=AS;Uid=root;Pwd=кщще;";
-            var dbManager = new DatabaseManager(connectionString);
-
-            Application.Run(new MainForm(dbManager));
+            Application.Run(new MainForm());
         }
     }
 }
