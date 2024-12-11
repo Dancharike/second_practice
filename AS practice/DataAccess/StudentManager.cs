@@ -1,61 +1,34 @@
 ﻿using System.Collections.Generic;
-using AS_practice.Models;
 using MySql.Data.MySqlClient;
+using AS_practice.DataAccess.InterfacesForDataAccess;
 
 namespace AS_practice.DataAccess
 {
-    public class StudentManager
+    public class StudentManager : DatabaseBase, IStudentManager
     {
-        private readonly string _connectionString;
+        public StudentManager(string connectionString) : base(connectionString) { }
 
-        public StudentManager(string connectionString)
+        public List<int> ViewGrades(int studentId)
         {
-            _connectionString = connectionString;
-        }
-        
-        public List<Student> GetAllStudents()
-        {
-            var students = new List<Student>();
+            var grades = new List<int>();
 
-            using (var connection = new MySqlConnection(_connectionString))
+            using (var connection = GetConnection())
             {
                 connection.Open();
-                string query = "SELECT * FROM students";
-
+                string query = "SELECT grade_value FROM grades WHERE student_id = @studentId";
                 using (var command = new MySqlCommand(query, connection))
-                using (var reader = command.ExecuteReader())
                 {
-                    while (reader.Read())
+                    command.Parameters.AddWithValue("@studentId", studentId);
+                    using (var reader = command.ExecuteReader())
                     {
-                        students.Add(new Student
+                        while (reader.Read())
                         {
-                            StudentId = reader.GetInt32("student_id"),
-                            FirstName = reader.GetString("first_name"),
-                            LastName = reader.GetString("last_name"),
-                            GroupId = reader.GetInt32("group_id")
-                        });
+                            grades.Add(reader.GetInt32("grade_value"));
+                        }
                     }
                 }
             }
-
-            return students;
-        }
-        
-        public void AddStudent(string firstName, string lastName, int groupId)
-        {
-            using (var connection = new MySqlConnection(_connectionString))
-            {
-                connection.Open();
-                string query = "INSERT INTO students (first_name, last_name, group_id) VALUES (@firstName, @lastName, @groupId)";
-
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@firstName", firstName);
-                    command.Parameters.AddWithValue("@lastName", lastName);
-                    command.Parameters.AddWithValue("@groupId", groupId);
-                    command.ExecuteNonQuery();
-                }
-            }
+            return grades;
         }
     }
 }
