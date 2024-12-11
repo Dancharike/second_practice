@@ -1,181 +1,179 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
-using AS_practice.DataAccess;
+using AS_practice;
+using AS_practice.Interface;
 
-namespace AS_practice
+public class MainForm : Form
 {
-    public class MainForm : Form
+    private IRole _role;
+
+    public MainForm()
     {
-        public MainForm()
+        Text = "Academic System";
+        Width = 1920;
+        Height = 1080;
+        StartPosition = FormStartPosition.CenterScreen;
+        BackColor = Color.Black;
+        LoadLoginStage();
+    }
+
+    private void LoadLoginStage()
+    {
+        Controls.Clear();
+        var panel = new Panel
         {
-            Text = "Academic System";
-            Width = 1920;
-            Height = 1080;
-            StartPosition = FormStartPosition.CenterScreen;
-            BackColor = Color.Black;
-            
+            Size = new Size(Width - 1500, Height - 500),
+            Location = new Point((Width - (Width - 1500)) / 2, (Height - (Height - 500)) / 2),
+            BackColor = Color.Black,
+            BorderStyle = BorderStyle.None
+        };
+        panel.Paint += Panel_Paint;
+        Controls.Add(panel);
+        
+        var label = new Label
+        {
+            Text = "Select Your Role:",
+            AutoSize = true,
+            Font = new Font("Arial", 16, FontStyle.Bold),
+            ForeColor = Color.White,
+            Location = new Point((panel.Width - 200) / 2, 20)
+        };
+        panel.Controls.Add(label);
+
+        CreateRoleButton(panel, new AdminRole(), 100);
+        CreateRoleButton(panel, new LecturerRole(), 250);
+        CreateRoleButton(panel, new StudentRole(), 400);
+    }
+    
+    private void Panel_Paint(object sender, PaintEventArgs e)
+    {
+        var panel = sender as Panel;
+        using (Pen pen = new Pen(Color.Gray, 5))
+        {
+            e.Graphics.DrawRectangle(pen, 0, 0, panel.Width - 1, panel.Height - 1);
+        }
+    }
+
+    private void CreateRoleButton(Panel parent, IRole role, int yOffset)
+    {
+        var roleButton = new Button
+        {
+            Text = role.RoleName,
+            AutoSize = true,
+            Location = new Point((parent.Width - 100) / 2, yOffset),
+            ForeColor = Color.White
+        };
+        roleButton.Click += (sender, e) => ShowLoginForm(parent, role);
+        parent.Controls.Add(roleButton);
+    }
+
+    private void ShowLoginForm(Panel parent, IRole role)
+    {
+        _role = role;
+        foreach (var control in parent.Controls.OfType<Button>())
+        {
+            control.Visible = false;
+        }
+
+        role.ShowLoginForm(parent, this);
+
+        var oldLabel = parent.Controls.OfType<Label>()
+            .FirstOrDefault(lbl => lbl.Text == "Select Your Role:");
+
+        if (oldLabel != null)
+        {
+            oldLabel.Visible = false;
+        }
+
+        var dataLabel = new Label
+        {
+            Text = "Data Entering:",
+            AutoSize = true,
+            Font = new Font("Arial", 16, FontStyle.Bold),
+            ForeColor = Color.White,
+            Location = new Point((parent.Width - 200) / 2, 20)
+        };
+        parent.Controls.Add(dataLabel);
+    }
+
+    public void AddLoginControls(Panel parent, string role)
+    {
+        var descriptionLabel = new Label
+        {
+            Text = $"You have selected the {role} role. Please enter your credentials to log in.",
+            AutoSize = true,
+            ForeColor = Color.White,
+            Location = new Point(50, 75)
+        };
+        parent.Controls.Add(descriptionLabel);
+        
+        var usernameLabel = new Label
+        {
+            Text = "Username:",
+            AutoSize = true,
+            ForeColor = Color.White,
+            Location = new Point(50, 150)
+        };
+        parent.Controls.Add(usernameLabel);
+
+        var usernameField = new TextBox
+        {
+            Width = 200,
+            Location = new Point(120, 150)
+        };
+        parent.Controls.Add(usernameField);
+
+        var passwordLabel = new Label
+        {
+            Text = "Password:",
+            AutoSize = true,
+            ForeColor = Color.White,
+            Location = new Point(50, 200)
+        };
+        parent.Controls.Add(passwordLabel);
+
+        var passwordField = new TextBox
+        {
+            Width = 200,
+            Location = new Point(120, 200),
+            UseSystemPasswordChar = true
+        };
+        parent.Controls.Add(passwordField);
+        
+        var loginButton = new Button
+        {
+            Text = "Login",
+            AutoSize = true,
+            Location = new Point((parent.Width - 100) / 2, 250),
+            ForeColor = Color.White
+        };
+        parent.Controls.Add(loginButton);
+
+        var backButton = new Button
+        {
+            Text = "Back",
+            AutoSize = true,
+            Location = new Point(245, 250),
+            ForeColor = Color.White
+        };
+        parent.Controls.Add(backButton);
+
+        backButton.Click += (sender, e) =>
+        {
             LoadLoginStage();
-        }
+        };
 
-        private void LoadLoginStage()
+        loginButton.Click += (sender, e) =>
         {
-            Controls.Clear();
-            
-            var panel = new Panel
+            if (string.IsNullOrWhiteSpace(usernameField.Text) || string.IsNullOrWhiteSpace(passwordField.Text))
             {
-                Size = new Size(Width - 1500, Height - 500),
-                Location = new Point((Width - (Width - 1500)) / 2, (Height - (Height - 500)) / 2), // centers panel in the middle of the screen 
-                BackColor = Color.Black,
-                BorderStyle = BorderStyle.None
-            };
-            panel.Paint += Panel_Paint; 
-            Controls.Add(panel);
-            
-            var label = new Label
-            {
-                Text = "Select Your Role:",
-                AutoSize = true,
-                Font = new Font("Arial", 16, FontStyle.Bold),
-                ForeColor = Color.White,
-                Location = new Point((panel.Width - 200) / 2, 20)
-            };
-            panel.Controls.Add(label);
-            
-            CreateRoleSection(panel, "Admin", 100);
-            CreateRoleSection(panel, "Lecturer", 250);
-            CreateRoleSection(panel, "Student", 400);
-        }
-
-        private void Panel_Paint(object sender, PaintEventArgs e)
-        {
-            var panel = sender as Panel;
-            using (Pen pen = new Pen(Color.Gray, 5)) 
-            {
-                e.Graphics.DrawRectangle(pen, 0, 0, panel.Width - 1, panel.Height - 1);
+                MessageBox.Show("Please enter both username and password.");
             }
-        }
-
-        private void CreateRoleSection(Panel parent, string role, int yOffset)
-        {
-            var usernameLabel = new Label
+            else
             {
-                Text = "Username:",
-                AutoSize = true,
-                ForeColor = Color.White,
-                Location = new Point(50, yOffset)
-            };
-            parent.Controls.Add(usernameLabel);
-            
-            var usernameField = new TextBox
-            {
-                Width = 200,
-                Location = new Point(120, yOffset)
-            };
-            parent.Controls.Add(usernameField);
-            
-            var passwordLabel = new Label
-            {
-                Text = "Password:",
-                AutoSize = true,
-                ForeColor = Color.White,
-                Location = new Point(50, yOffset + 60)
-            };
-            parent.Controls.Add(passwordLabel);
-            
-            var passwordField = new TextBox
-            {
-                Width = 200,
-                Location = new Point(120, yOffset + 60),
-                UseSystemPasswordChar = true
-            };
-            parent.Controls.Add(passwordField);
-            
-            var roleButton = new Button
-            {
-                Text = role,
-                AutoSize = true,
-                Location = new Point((parent.Width - 100) / 2, yOffset + 100),
-                ForeColor = Color.White // Белый цвет текста на кнопке
-            };
-            
-            if (role == "Admin")
-                roleButton.Click += (sender, e) => LoadAdminStage();
-            else if (role == "Lecturer")
-                roleButton.Click += (sender, e) => LoadLecturerStage();
-            else if (role == "Student")
-                roleButton.Click += (sender, e) => LoadStudentStage();
-
-            parent.Controls.Add(roleButton);
-        }
-
-        private void LoadAdminStage()
-        {
-            Controls.Clear();
-            var label = new Label
-            {
-                Text = "Welcome, Admin!",
-                AutoSize = true,
-                ForeColor = Color.White,
-                Location = new Point((Width - 100) / 2, (Height - 30) / 2)
-            };
-            Controls.Add(label);
-
-            var backButton = new Button
-            {
-                Text = "Back",
-                AutoSize = true,
-                Location = new Point((Width - 100) / 2, (Height + 30) / 2),
-                ForeColor = Color.White // Белый цвет текста на кнопке
-            };
-            backButton.Click += (sender, e) => LoadLoginStage();
-            Controls.Add(backButton);
-        }
-
-        private void LoadLecturerStage()
-        {
-            Controls.Clear();
-            var label = new Label
-            {
-                Text = "Welcome, Lecturer!",
-                AutoSize = true,
-                ForeColor = Color.White,
-                Location = new Point((Width - 100) / 2, (Height - 30) / 2)
-            };
-            Controls.Add(label);
-
-            var backButton = new Button
-            {
-                Text = "Back",
-                AutoSize = true,
-                Location = new Point((Width - 100) / 2, (Height + 30) / 2),
-                ForeColor = Color.White // Белый цвет текста на кнопке
-            };
-            backButton.Click += (sender, e) => LoadLoginStage();
-            Controls.Add(backButton);
-        }
-
-        private void LoadStudentStage()
-        {
-            Controls.Clear();
-            var label = new Label
-            {
-                Text = "Welcome, Student!",
-                AutoSize = true,
-                ForeColor = Color.White,
-                Location = new Point((Width - 100) / 2, (Height - 30) / 2)
-            };
-            Controls.Add(label);
-
-            var backButton = new Button
-            {
-                Text = "Back",
-                AutoSize = true,
-                Location = new Point((Width - 100) / 2, (Height + 30) / 2),
-                ForeColor = Color.White
-            };
-            backButton.Click += (sender, e) => LoadLoginStage();
-            Controls.Add(backButton);
-        }
+                MessageBox.Show($"{role} logged in.");
+            }
+        };
     }
 }
