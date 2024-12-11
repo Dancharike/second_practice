@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Drawing; 
+using System.Drawing;
 using System.Windows.Forms;
 using AS_practice.DataAccess;
 
@@ -13,7 +13,7 @@ namespace AS_practice
             Width = 1920;
             Height = 1080;
             StartPosition = FormStartPosition.CenterScreen;
-            BackColor = Color.Black; 
+            BackColor = Color.Black;
             
             LoadLoginStage();
         }
@@ -24,11 +24,12 @@ namespace AS_practice
             
             var panel = new Panel
             {
-                Size = new Size(Width - 400, Height - 300),
-                Location = new Point(200, 150),
-                BackColor = Color.Gray, 
-                BorderStyle = BorderStyle.FixedSingle 
+                Size = new Size(Width - 1500, Height - 500),
+                Location = new Point((Width - (Width - 1500)) / 2, (Height - (Height - 500)) / 2), // centers panel in the middle of the screen 
+                BackColor = Color.Black,
+                BorderStyle = BorderStyle.None
             };
+            panel.Paint += Panel_Paint; 
             Controls.Add(panel);
             
             var label = new Label
@@ -46,6 +47,15 @@ namespace AS_practice
             CreateRoleSection(panel, "Student", 400);
         }
 
+        private void Panel_Paint(object sender, PaintEventArgs e)
+        {
+            var panel = sender as Panel;
+            using (Pen pen = new Pen(Color.Gray, 5)) 
+            {
+                e.Graphics.DrawRectangle(pen, 0, 0, panel.Width - 1, panel.Height - 1);
+            }
+        }
+
         private void CreateRoleSection(Panel parent, string role, int yOffset)
         {
             var usernameLabel = new Label
@@ -53,14 +63,14 @@ namespace AS_practice
                 Text = "Username:",
                 AutoSize = true,
                 ForeColor = Color.White,
-                Location = new Point((parent.Width - 200) / 2, yOffset)
+                Location = new Point(50, yOffset)
             };
             parent.Controls.Add(usernameLabel);
             
             var usernameField = new TextBox
             {
                 Width = 200,
-                Location = new Point((parent.Width - 200) / 2, yOffset + 25)
+                Location = new Point(120, yOffset)
             };
             parent.Controls.Add(usernameField);
             
@@ -69,15 +79,15 @@ namespace AS_practice
                 Text = "Password:",
                 AutoSize = true,
                 ForeColor = Color.White,
-                Location = new Point((parent.Width - 200) / 2, yOffset + 60)
+                Location = new Point(50, yOffset + 60)
             };
             parent.Controls.Add(passwordLabel);
             
             var passwordField = new TextBox
             {
                 Width = 200,
-                Location = new Point((parent.Width - 200) / 2, yOffset + 85),
-                UseSystemPasswordChar = true 
+                Location = new Point(120, yOffset + 60),
+                UseSystemPasswordChar = true
             };
             parent.Controls.Add(passwordField);
             
@@ -85,7 +95,8 @@ namespace AS_practice
             {
                 Text = role,
                 AutoSize = true,
-                Location = new Point((parent.Width - 100) / 2, yOffset + 130)
+                Location = new Point((parent.Width - 100) / 2, yOffset + 100),
+                ForeColor = Color.White // Белый цвет текста на кнопке
             };
             
             if (role == "Admin")
@@ -114,7 +125,8 @@ namespace AS_practice
             {
                 Text = "Back",
                 AutoSize = true,
-                Location = new Point((Width - 100) / 2, (Height + 30) / 2)
+                Location = new Point((Width - 100) / 2, (Height + 30) / 2),
+                ForeColor = Color.White // Белый цвет текста на кнопке
             };
             backButton.Click += (sender, e) => LoadLoginStage();
             Controls.Add(backButton);
@@ -136,7 +148,8 @@ namespace AS_practice
             {
                 Text = "Back",
                 AutoSize = true,
-                Location = new Point((Width - 100) / 2, (Height + 30) / 2)
+                Location = new Point((Width - 100) / 2, (Height + 30) / 2),
+                ForeColor = Color.White // Белый цвет текста на кнопке
             };
             backButton.Click += (sender, e) => LoadLoginStage();
             Controls.Add(backButton);
@@ -158,7 +171,8 @@ namespace AS_practice
             {
                 Text = "Back",
                 AutoSize = true,
-                Location = new Point((Width - 100) / 2, (Height + 30) / 2)
+                Location = new Point((Width - 100) / 2, (Height + 30) / 2),
+                ForeColor = Color.White
             };
             backButton.Click += (sender, e) => LoadLoginStage();
             Controls.Add(backButton);
