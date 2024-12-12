@@ -2,14 +2,19 @@
 using System.Linq;
 using System.Windows.Forms;
 using AS_practice;
+using AS_practice.DataAccess;
 using AS_practice.Interface;
 
 public class MainForm : Form
 {
     private IRole _role;
-
-    public MainForm()
+    private readonly DatabaseManager _database;
+    private string _selectedRole;
+    
+    public MainForm(string connectionString)
     {
+        InitializeComponent();
+        _database = new DatabaseManager(connectionString);
         Text = "Academic System";
         Width = 1920;
         Height = 1080;
@@ -17,7 +22,6 @@ public class MainForm : Form
         BackColor = Color.Black;
         LoadLoginStage();
     }
-
     private void LoadLoginStage()
     {
         Controls.Clear();
@@ -64,7 +68,11 @@ public class MainForm : Form
             Location = new Point((parent.Width - 100) / 2, yOffset),
             ForeColor = Color.White
         };
-        roleButton.Click += (sender, e) => ShowLoginForm(parent, role);
+        roleButton.Click += (sender, e) =>
+        {
+            _selectedRole = role.RoleName;
+            ShowLoginForm(parent, role);
+        };
         parent.Controls.Add(roleButton);
     }
 
@@ -172,8 +180,44 @@ public class MainForm : Form
             }
             else
             {
-                MessageBox.Show($"{role} logged in.");
+                bool isValid = _database.ValidateUser(usernameField.Text, passwordField.Text,_selectedRole);
+                if (isValid)
+                {
+                    MessageBox.Show($"{role} logged in.");
+                    if (_selectedRole == "Admin")
+                    {
+                        // goto the admin page
+                    }
+                    else if (_selectedRole == "Lecturer")
+                    {
+                        // goto the lecturer page
+                        
+                    }
+                    else if (_selectedRole == "Student")
+                    {
+                        // goto the student page
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Invalid login or password.");
+                }
             }
         };
+    }
+
+    /// <summary>
+    /// Required method for Designer support - do not modify
+    /// the contents of this method with the code editor.
+    /// </summary>
+    private void InitializeComponent()
+    {
+        this.SuspendLayout();
+        // 
+        // MainForm
+        // 
+        this.ClientSize = new System.Drawing.Size(286, 261);
+        this.Name = "MainForm";
+        this.ResumeLayout(false);
     }
 }

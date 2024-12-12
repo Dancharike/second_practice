@@ -40,3 +40,4 @@ C:\Users\Denis\RiderProjects\second_practice\AS practice\bin\Debug\System.Numeri
 C:\Users\Denis\RiderProjects\second_practice\AS practice\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\Denis\RiderProjects\second_practice\AS practice\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS pract.D5BBC6E2.Up2Date
+C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\MainForm.resources

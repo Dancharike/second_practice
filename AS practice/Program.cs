@@ -9,9 +9,11 @@ namespace AS_practice
         [STAThread]
         static void Main()
         {
+            string connectionString = "Server=mysql.localhost;Port=3305;Database=AS;Uid=root;Pwd=кщще;";
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            Application.Run(new MainForm(connectionString));
+            
         }
     }
 }
