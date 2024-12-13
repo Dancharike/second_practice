@@ -22,20 +22,21 @@ namespace AS_practice.DataAccess
             _role = new RoleValidation(connectionString);
         }
 
-        public void AddUser(string username, string password, string role)
+        public void AddUser(string username, string password, string role, int roleSpecificId)
         {
             using (var connection = GetConnection())
             {
                 connection.Open();
                 string query = @"
-                    INSERT INTO users (username, password, role_id)
-                    VALUES (@username, @password, (SELECT role_id FROM user_roles WHERE role_name = @role))";
-                
+                    INSERT INTO users (username, password, role_id, role_specific_id)
+                    VALUES (@username, @password, @roleId, @roleSpecificId)";
+
                 using (var command = new MySqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@username", username);
                     command.Parameters.AddWithValue("@password", password);
-                    command.Parameters.AddWithValue("@role", role);
+                    command.Parameters.AddWithValue("@roleId", role);
+                    command.Parameters.AddWithValue("@roleSpecificId", roleSpecificId);
                     command.ExecuteNonQuery();
                 }
             }
@@ -46,18 +47,6 @@ namespace AS_practice.DataAccess
             using (var connection = GetConnection())
             {
                 connection.Open();
-                string roleName = _role.GetUserRoleName(userId);
-                
-                if (string.IsNullOrEmpty(roleName))
-                {
-                    throw new Exception("User not found.");
-                }
-
-                if (roleName == "Admin")
-                {
-                    throw new InvalidOperationException("Cannot delete an administrator.");
-                }
-
                 string query = "DELETE FROM users WHERE user_id = @userId";
                 using (var command = new MySqlCommand(query, connection))
                 {
@@ -102,11 +91,6 @@ namespace AS_practice.DataAccess
                 throw new Exception("Group not found.");
             }
 
-            if (!_student.StudentExists(studentId))
-            {
-                throw new Exception("Student not found.");
-            }
-
             using (var connection = GetConnection())
             {
                 connection.Open();
@@ -127,15 +111,13 @@ namespace AS_practice.DataAccess
                 throw new Exception("Course not found.");
             }
 
-            if (!_student.StudentExists(studentId))
-            {
-                throw new Exception("Student not found.");
-            }
-
             using (var connection = GetConnection())
             {
                 connection.Open();
-                string query = "INSERT INTO grades (student_id, lecturer_course_id, grade_value) VALUES (@studentId, @courseId, NULL)";
+                string query = @"
+                    INSERT INTO grades (student_id, lecturer_course_id, grade_value)
+                    VALUES (@studentId, @courseId, NULL)";
+
                 using (var command = new MySqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@studentId", studentId);
@@ -144,17 +126,12 @@ namespace AS_practice.DataAccess
                 }
             }
         }
-        
+
         public void AssignSubjectsToGroup(int groupId, List<int> subjectIds)
         {
             if (subjectIds == null || subjectIds.Count == 0 || subjectIds.Count > 7)
             {
                 throw new ArgumentException("You must provide between 1 and 7 subject IDs.");
-            }
-
-            if (!_group.GroupExists(groupId))
-            {
-                throw new Exception("Group not found.");
             }
 
             using (var connection = GetConnection())
@@ -178,7 +155,7 @@ namespace AS_practice.DataAccess
                 }
             }
         }
-        
+
         public void AssignLecturerToCourse(int lecturerId, int courseId)
         {
             using (var connection = GetConnection())
@@ -193,7 +170,7 @@ namespace AS_practice.DataAccess
                 }
             }
         }
-        
+
         public List<object> GetAdminData()
         {
             List<object> adminData = new List<object>();
@@ -213,7 +190,7 @@ namespace AS_practice.DataAccess
                         StudentId = studentReader.GetInt32("student_id"),
                         FirstName = studentReader.GetString("first_name"),
                         LastName = studentReader.GetString("last_name"),
-                        GroupId = studentReader.GetInt32("group_id")
+                        GroupId = studentReader.IsDBNull(studentReader.GetOrdinal("group_id")) ? (int?)null : studentReader.GetInt32("group_id")
                     });
                 }
                 adminData.Add(students);
@@ -264,17 +241,76 @@ namespace AS_practice.DataAccess
                 }
                 adminData.Add(lecturers);
                 lecturerReader.Close();
+                
+                string lecturerCourseQuery = "SELECT lecturer_course_id, lecturer_id, course_id FROM lecturer_courses";
+                var lecturerCourseCommand = new MySqlCommand(lecturerCourseQuery, connection);
+                var lecturerCourseReader = lecturerCourseCommand.ExecuteReader();
+                List<LecturerCourse> lecturerCourses = new List<LecturerCourse>();
+                while (lecturerCourseReader.Read())
+                {
+                    lecturerCourses.Add(new LecturerCourse
+                    {
+                        LecturerCourseId = lecturerCourseReader.GetInt32("lecturer_course_id"),
+                        LecturerId = lecturerCourseReader.GetInt32("lecturer_id"),
+                        CourseId = lecturerCourseReader.GetInt32("course_id")
+                    });
+                }
+                adminData.Add(lecturerCourses);
+                lecturerCourseReader.Close();
+                
+                string gradeQuery = "SELECT grade_id, student_id, lecturer_course_id, grade_value FROM grades";
+                var gradeCommand = new MySqlCommand(gradeQuery, connection);
+                var gradeReader = gradeCommand.ExecuteReader();
+                List<Grade> grades = new List<Grade>();
+                while (gradeReader.Read())
+                {
+                    grades.Add(new Grade
+                    {
+                        GradeId = gradeReader.GetInt32("grade_id"),
+                        StudentId = gradeReader.GetInt32("student_id"),
+                        LecturerCourseId = gradeReader.GetInt32("lecturer_course_id"),
+                        GradeValue = gradeReader.GetInt32("grade_value")
+                    });
+                }
+                adminData.Add(grades);
+                gradeReader.Close();
+                
+                string userQuery = "SELECT user_id, username, password, role_id, role_specific_id FROM users";
+                var userCommand = new MySqlCommand(userQuery, connection);
+                var userReader = userCommand.ExecuteReader();
+                List<User> users = new List<User>();
+                while (userReader.Read())
+                {
+                    users.Add(new User
+                    {
+                        UserId = userReader.GetInt32("user_id"),
+                        Username = userReader.GetString("username"),
+                        Password = userReader.GetString("password"),
+                        RoleId = userReader.IsDBNull(userReader.GetOrdinal("role_id")) ? 0 : userReader.GetInt32("role_id"),
+                        RoleSpecificId = userReader.IsDBNull(userReader.GetOrdinal("role_specific_id")) ? 0 : userReader.GetInt32("role_specific_id")
+                    });
+                }
+                adminData.Add(users);
+                userReader.Close();
+                
+                string roleQuery = "SELECT role_id, role_name FROM user_roles";
+                var roleCommand = new MySqlCommand(roleQuery, connection);
+                var roleReader = roleCommand.ExecuteReader();
+                List<UserRoles> roles = new List<UserRoles>();
+                while (roleReader.Read())
+                {
+                    roles.Add(new UserRoles
+                    {
+                        RoleId = roleReader.GetInt32("role_id"),
+                        RoleName = roleReader.GetString("role_name")
+                    });
+                }
+                adminData.Add(roles);
+                roleReader.Close();
+
             }
 
             return adminData;
-        }
-        
-        public void DisplayAdminData(List<object> adminData)
-        {
-            var students = (List<Student>)adminData[0];
-            var groups = (List<StudentGroup>)adminData[1];
-            var courses = (List<Course>)adminData[2];
-            var lecturers = (List<Lecturer>)adminData[3];
         }
     }
 }

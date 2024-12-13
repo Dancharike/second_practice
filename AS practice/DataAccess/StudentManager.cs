@@ -6,7 +6,7 @@ namespace AS_practice.DataAccess
 {
     public class StudentManager : DatabaseBase, IStudentManager
     {
-        public StudentManager(string connectionString) : base(connectionString) { }
+        public StudentManager(string connectionString) : base(connectionString) {}
 
         public List<int> ViewGrades(int studentId)
         {
@@ -15,7 +15,12 @@ namespace AS_practice.DataAccess
             using (var connection = GetConnection())
             {
                 connection.Open();
-                string query = "SELECT grade_value FROM grades WHERE student_id = @studentId";
+                
+                string query = "SELECT g.grade_value " +
+                               "FROM grades g " +
+                               "JOIN lecturer_courses lc ON g.lecturer_course_id = lc.lecturer_course_id " +
+                               "WHERE g.student_id = @studentId";
+                               
                 using (var command = new MySqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@studentId", studentId);

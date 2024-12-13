@@ -156,7 +156,6 @@ public class MainForm : Form
                         {
                             LoadAdminPage adminPage = new LoadAdminPage(_admin);
                             adminPage.Show();
-                            //Hide();
                         }
                         else if (_selectedRole == "Lecturer")
                         {
@@ -169,7 +168,7 @@ public class MainForm : Form
                     }
                     else
                     {
-                        MessageBox.Show("You are trying to log in as a wrong role!");
+                        MessageBox.Show("You are trying to log in with an incorrect role or credentials!");
                     }
                 }
             }
@@ -183,7 +182,7 @@ public class MainForm : Form
         );
         parent.Controls.Add(backButton);
     }
-
+    
     /// <summary>
     /// Required method for Designer support - do not modify
     /// the contents of this method with the code editor.

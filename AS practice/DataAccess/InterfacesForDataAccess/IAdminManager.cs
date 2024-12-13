@@ -4,7 +4,7 @@ namespace AS_practice.DataAccess.InterfacesForDataAccess
 {
     public interface IAdminManager
     {
-        void AddUser(string username, string password, int roleId, int roleSpecificId); // add lecturers and students or even another admin
+        void AddUser(string username, string password, string role, int roleSpecificId); // add lecturers and students or even another admin
         void DeleteUser(int userId); // delete users except admin
         void CreateGroup(string groupName); //
         void CreateCourse(string courseName); //

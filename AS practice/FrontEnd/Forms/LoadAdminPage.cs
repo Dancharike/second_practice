@@ -9,23 +9,22 @@ using AS_practice.Models;
 public class LoadAdminPage : Form
 {
     private readonly AdminManager _adminManager;
+    private readonly UIManager _uiManager;
+    private readonly List<Button> _buttons = new List<Button>();
+    private readonly List<DataGridView> _gridViews = new List<DataGridView>();
     private DataGridView _studentsGridView;
-    private DataGridView _groupsGridView;
-    private DataGridView _coursesGridView;
     private DataGridView _lecturersGridView;
+    private DataGridView _coursesGridView;
+    private DataGridView _groupsGridView;
+    private DataGridView _lecturerCoursesGridView;
+    private DataGridView _gradesGridView;
+    private DataGridView _usersGridView;
+    private DataGridView _rolesGridView;
     
-    private Button _addUserButton;
-    private Button _deleteUserButton;
-    private Button _createGroupButton;
-    private Button _createCourseButton;
-    private Button _assignStudentToGroupButton;
-    private Button _assignStudentToCourseButton;
-    private Button _assignSubjectsToGroupButton;
-    private Button _assignLecturerToCourseButton;
-
     public LoadAdminPage(AdminManager adminManager)
     {
         _adminManager = adminManager;
+        _uiManager = new UIManager();
         InitializeComponents();
         LoadData();
     }
@@ -35,139 +34,61 @@ public class LoadAdminPage : Form
         Text = "Admin Panel";
         Size = new Size(1920, 1080);
         BackColor = Color.Black;
-        
-        _addUserButton = new Button
-        {
-            Text = "Add User",
-            Location = new Point(20, 20),
-            Size = new Size(150, 30),
-            ForeColor = Color.White
-        };
-        _addUserButton.Click += AddUserButton_Click;
-        
-        _deleteUserButton = new Button
-        {
-            Text = "Delete User",
-            Location = new Point(20, 60),
-            Size = new Size(150, 30),
-            ForeColor = Color.White
-        };
-        _deleteUserButton.Click += DeleteUserButton_Click;
-        
-        _createGroupButton = new Button
-        {
-            Text = "Create Group",
-            Location = new Point(20, 100),
-            Size = new Size(150, 30),
-            ForeColor = Color.White
-        };
-        _createGroupButton.Click += CreateGroupButton_Click;
-        
-        _createCourseButton = new Button
-        {
-            Text = "Create Course",
-            Location = new Point(20, 140),
-            Size = new Size(150, 30),
-            ForeColor = Color.White
-        };
-        _createCourseButton.Click += CreateCourseButton_Click;
-        
-        _assignStudentToGroupButton = new Button
-        {
-            Text = "Assign Student to Group",
-            Location = new Point(20, 180),
-            Size = new Size(200, 30),
-            ForeColor = Color.White
-        };
-        _assignStudentToGroupButton.Click += AssignStudentToGroupButton_Click;
-        
-        _assignStudentToCourseButton = new Button
-        {
-            Text = "Assign Student to Course",
-            Location = new Point(20, 220),
-            Size = new Size(200, 30),
-            ForeColor = Color.White
-        };
-        _assignStudentToCourseButton.Click += AssignStudentToCourseButton_Click;
-        
-        _assignSubjectsToGroupButton = new Button
-        {
-            Text = "Assign Subjects to Group",
-            Location = new Point(20, 260),
-            Size = new Size(200, 30),
-            ForeColor = Color.White
-        };
-        _assignSubjectsToGroupButton.Click += AssignSubjectsToGroupButton_Click;
-        
-        _assignLecturerToCourseButton = new Button
-        {
-            Text = "Assign Lecturer to Course",
-            Location = new Point(20, 300),
-            Size = new Size(200, 30),
-            ForeColor = Color.White
-        };
-        _assignLecturerToCourseButton.Click += AssignLecturerToCourseButton_Click;
-        
-        _studentsGridView = new DataGridView
-        {
-            Location = new Point(600, 20),
-            Size = new Size(800, 250),
-            AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
-        };
-        
-        _groupsGridView = new DataGridView
-        {
-            Location = new Point(600, 800),
-            Size = new Size(800, 250),
-            AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
-        };
 
-        _coursesGridView = new DataGridView
-        {
-            Location = new Point(600, 540),
-            Size = new Size(800, 250),
-            AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
-        };
+        CreateButton("Add User", new Point(20, 20), AddUserButtonClick);
+        CreateButton("Delete User", new Point(20, 60), DeleteUserButtonClick);
+        CreateButton("Create Group", new Point(20, 100), CreateGroupButtonClick);
+        CreateButton("Create Course", new Point(20, 140), CreateCourseButtonClick);
+        CreateButton("Assign Student to Group", new Point(20, 180), AssignStudentToGroupButtonClick);
+        CreateButton("Assign Student to Course", new Point(20, 220), AssignStudentToCourseButtonClick);
+        CreateButton("Assign Subjects to Group", new Point(20, 260), AssignSubjectsToGroupButtonClick);
+        CreateButton("Assign Lecturer to Course", new Point(20, 300), AssignLecturerToCourseButtonClick);
 
-        _lecturersGridView = new DataGridView
-        {
-            Location = new Point(600, 280),
-            Size = new Size(800, 250),
-            AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
-        };
-        
-        Controls.Add(_addUserButton);
-        Controls.Add(_deleteUserButton);
-        Controls.Add(_createGroupButton);
-        Controls.Add(_createCourseButton);
-        Controls.Add(_assignStudentToGroupButton);
-        Controls.Add(_assignStudentToCourseButton);
-        Controls.Add(_assignSubjectsToGroupButton);
-        Controls.Add(_assignLecturerToCourseButton);
-        Controls.Add(_studentsGridView);
-        Controls.Add(_groupsGridView);
-        Controls.Add(_coursesGridView);
-        Controls.Add(_lecturersGridView);
+        CreateDataGridView(new Point(500, 0), ref _studentsGridView);
+        CreateDataGridView(new Point(500, 250), ref _lecturersGridView);
+        CreateDataGridView(new Point(500, 500), ref _lecturerCoursesGridView);
+        CreateDataGridView(new Point(500, 750), ref _usersGridView);
+        CreateDataGridView(new Point(1150, 0), ref _coursesGridView);
+        CreateDataGridView(new Point(1150, 250), ref _groupsGridView);
+        CreateDataGridView(new Point(1150, 500), ref _gradesGridView);
+        CreateDataGridView(new Point(1150, 750), ref _rolesGridView);
+
+        Controls.AddRange(_buttons.ToArray());
+        Controls.AddRange(_gridViews.ToArray());
     }
-    
+
+    private void CreateButton(string text, Point location, EventHandler clickEvent)
+    {
+        var button = _uiManager.CreateButton(text, location, clickEvent);
+        _buttons.Add(button);
+    }
+
+    private void CreateDataGridView(Point location, ref DataGridView gridView)
+    {
+        gridView = new DataGridView
+        {
+            Location = location,
+            Size = new Size(600, 250),
+            AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+        };
+        _gridViews.Add(gridView);
+    }
+
     private void LoadData()
     {
         try
         {
             var adminData = _adminManager.GetAdminData();
-            
-            var students = (List<Student>)adminData[0];
-            _studentsGridView.DataSource = students;
-            
-            var groups = (List<StudentGroup>)adminData[1];
-            _groupsGridView.DataSource = groups;
-            
-            var courses = (List<Course>)adminData[2];
-            _coursesGridView.DataSource = courses;
-            
-            var lecturers = (List<Lecturer>)adminData[3];
-            _lecturersGridView.DataSource = lecturers;
-            MessageBox.Show("User data loaded successfully.");
+
+            _studentsGridView.DataSource = (List<Student>)adminData[0];
+            _groupsGridView.DataSource = (List<StudentGroup>)adminData[1];
+            _coursesGridView.DataSource = (List<Course>)adminData[2];
+            _lecturersGridView.DataSource = (List<Lecturer>)adminData[3];
+            _lecturerCoursesGridView.DataSource = (List<LecturerCourse>)adminData[4];
+            _gradesGridView.DataSource = (List<Grade>)adminData[5];
+            _usersGridView.DataSource = (List<User>)adminData[6];
+            _rolesGridView.DataSource = (List<UserRoles>)adminData[7];
+
         }
         catch (Exception ex)
         {
@@ -175,15 +96,29 @@ public class LoadAdminPage : Form
         }
     }
     
-    private void AddUserButton_Click(object sender, EventArgs e)
+    private void AddUserButtonClick(object sender, EventArgs e)
     {
         string username = UIManager.ShowPrompt("Enter username:", "Add User");
         string password = UIManager.ShowPrompt("Enter password:", "Add User");
         string role = UIManager.ShowPrompt("Enter role (Admin/Lecturer/Student):", "Add User");
+        int roleSpecificId = 0;
+
+        if (role == "Admin")
+        {
+            roleSpecificId = int.Parse(UIManager.ShowPrompt("Enter Admin ID:", "Add User"));
+        }
+        else if (role == "Lecturer")
+        {
+            roleSpecificId = int.Parse(UIManager.ShowPrompt("Enter Lecturer ID:", "Add User"));
+        }
+        else if (role == "Student")
+        {
+            roleSpecificId = int.Parse(UIManager.ShowPrompt("Enter Student ID:", "Add User"));
+        }
 
         try
         {
-            _adminManager.AddUser(username, password, role);
+            _adminManager.AddUser(username, password, role, roleSpecificId);
             MessageBox.Show("User added successfully.");
         }
         catch (Exception ex)
@@ -192,7 +127,7 @@ public class LoadAdminPage : Form
         }
     }
 
-    private void DeleteUserButton_Click(object sender, EventArgs e)
+    private void DeleteUserButtonClick(object sender, EventArgs e)
     {
         string userIdStr = UIManager.ShowPrompt("Enter user ID to delete:", "Delete User");
         if (int.TryParse(userIdStr, out int userId))
@@ -213,7 +148,7 @@ public class LoadAdminPage : Form
         }
     }
 
-    private void CreateGroupButton_Click(object sender, EventArgs e)
+    private void CreateGroupButtonClick(object sender, EventArgs e)
     {
         string groupName = UIManager.ShowPrompt("Enter group name:", "Create Group");
 
@@ -228,7 +163,7 @@ public class LoadAdminPage : Form
         }
     }
 
-    private void CreateCourseButton_Click(object sender, EventArgs e)
+    private void CreateCourseButtonClick(object sender, EventArgs e)
     {
         string courseName = UIManager.ShowPrompt("Enter course name:", "Create Course");
 
@@ -243,7 +178,7 @@ public class LoadAdminPage : Form
         }
     }
 
-    private void AssignStudentToGroupButton_Click(object sender, EventArgs e)
+    private void AssignStudentToGroupButtonClick(object sender, EventArgs e)
     {
         string studentIdStr = UIManager.ShowPrompt("Enter student ID:", "Assign Student to Group");
         string groupIdStr = UIManager.ShowPrompt("Enter group ID:", "Assign Student to Group");
@@ -266,7 +201,7 @@ public class LoadAdminPage : Form
         }
     }
 
-    private void AssignStudentToCourseButton_Click(object sender, EventArgs e)
+    private void AssignStudentToCourseButtonClick(object sender, EventArgs e)
     {
         string studentIdStr = UIManager.ShowPrompt("Enter student ID:", "Assign Student to Course");
         string courseIdStr = UIManager.ShowPrompt("Enter course ID:", "Assign Student to Course");
@@ -289,7 +224,7 @@ public class LoadAdminPage : Form
         }
     }
 
-    private void AssignSubjectsToGroupButton_Click(object sender, EventArgs e)
+    private void AssignSubjectsToGroupButtonClick(object sender, EventArgs e)
     {
         string groupIdStr = UIManager.ShowPrompt("Enter group ID:", "Assign Subjects to Group");
         string subjectIdsStr = UIManager.ShowPrompt("Enter subject IDs (comma-separated):", "Assign Subjects to Group");
@@ -321,7 +256,7 @@ public class LoadAdminPage : Form
         }
     }
 
-    private void AssignLecturerToCourseButton_Click(object sender, EventArgs e)
+    private void AssignLecturerToCourseButtonClick(object sender, EventArgs e)
     {
         string lecturerIdStr = UIManager.ShowPrompt("Enter lecturer ID:", "Assign Lecturer to Course");
         string courseIdStr = UIManager.ShowPrompt("Enter course ID:", "Assign Lecturer to Course");
