@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using AS_practice.DataAccess.InterfacesForDataAccess;
 using AS_practice.DataAccess.ValidationClasses;
+using AS_practice.Models;
 
 namespace AS_practice.DataAccess
 {
@@ -191,6 +192,89 @@ namespace AS_practice.DataAccess
                     command.ExecuteNonQuery();
                 }
             }
+        }
+        
+        public List<object> GetAdminData()
+        {
+            List<object> adminData = new List<object>();
+
+            using (var connection = GetConnection())
+            {
+                connection.Open();
+                
+                string studentQuery = "SELECT student_id, first_name, last_name, group_id FROM students";
+                var studentCommand = new MySqlCommand(studentQuery, connection);
+                var studentReader = studentCommand.ExecuteReader();
+                List<Student> students = new List<Student>();
+                while (studentReader.Read())
+                {
+                    students.Add(new Student
+                    {
+                        StudentId = studentReader.GetInt32("student_id"),
+                        FirstName = studentReader.GetString("first_name"),
+                        LastName = studentReader.GetString("last_name"),
+                        GroupId = studentReader.GetInt32("group_id")
+                    });
+                }
+                adminData.Add(students);
+                studentReader.Close();
+                
+                string groupQuery = "SELECT group_id, group_name FROM student_groups";
+                var groupCommand = new MySqlCommand(groupQuery, connection);
+                var groupReader = groupCommand.ExecuteReader();
+                List<StudentGroup> groups = new List<StudentGroup>();
+                while (groupReader.Read())
+                {
+                    groups.Add(new StudentGroup
+                    {
+                        GroupId = groupReader.GetInt32("group_id"),
+                        GroupName = groupReader.GetString("group_name")
+                    });
+                }
+                adminData.Add(groups);
+                groupReader.Close();
+                
+                string courseQuery = "SELECT course_id, course_name FROM courses";
+                var courseCommand = new MySqlCommand(courseQuery, connection);
+                var courseReader = courseCommand.ExecuteReader();
+                List<Course> courses = new List<Course>();
+                while (courseReader.Read())
+                {
+                    courses.Add(new Course
+                    {
+                        CourseId = courseReader.GetInt32("course_id"),
+                        CourseName = courseReader.GetString("course_name")
+                    });
+                }
+                adminData.Add(courses);
+                courseReader.Close();
+                
+                string lecturerQuery = "SELECT lecturer_id, first_name, last_name FROM lecturers";
+                var lecturerCommand = new MySqlCommand(lecturerQuery, connection);
+                var lecturerReader = lecturerCommand.ExecuteReader();
+                List<Lecturer> lecturers = new List<Lecturer>();
+                while (lecturerReader.Read())
+                {
+                    lecturers.Add(new Lecturer
+                    {
+                        LecturerId = lecturerReader.GetInt32("lecturer_id"),
+                        FirstName = lecturerReader.GetString("first_name"),
+                        LastName = lecturerReader.GetString("last_name")
+                    });
+                }
+                adminData.Add(lecturers);
+                lecturerReader.Close();
+            }
+
+            return adminData;
+        }
+        
+        public void DisplayAdminData(List<object> adminData)
+        {
+            var students = (List<Student>)adminData[0];
+            var groups = (List<StudentGroup>)adminData[1];
+            var courses = (List<Course>)adminData[2];
+            var lecturers = (List<Lecturer>)adminData[3];
         }
     }
 }

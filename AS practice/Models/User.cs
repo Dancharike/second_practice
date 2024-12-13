@@ -5,6 +5,7 @@
         public int UserId { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
-        public string Role { get; set; } // administrator, lecturer or student
+        public int RoleId { get; set; } // administrator, lecturer or student
+        public int RoleSpecificId { get; set; }
     }
 }

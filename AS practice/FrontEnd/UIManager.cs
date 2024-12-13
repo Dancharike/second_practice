@@ -41,5 +41,26 @@ namespace AS_practice.FrontEnd
             button.Click += clickEvent;
             return button;
         }
+
+        public static string ShowPrompt(string text, string caption)
+        {
+            Form prompt = new Form()
+            {
+                Width = 500,
+                Height = 150,
+                Text = caption
+            };
+    
+            Label label = new Label() { Left = 50, Top = 20, Text = text };
+            TextBox inputBox = new TextBox() { Left = 50, Top = 50, Width = 400 };
+            Button okButton = new Button() { Text = "OK", Left = 350, Width = 100, Top = 70, DialogResult = DialogResult.OK };
+
+            prompt.Controls.Add(label);
+            prompt.Controls.Add(inputBox);
+            prompt.Controls.Add(okButton);
+            prompt.AcceptButton = okButton;
+
+            return prompt.ShowDialog() == DialogResult.OK ? inputBox.Text : string.Empty;
+        }
     }
 }

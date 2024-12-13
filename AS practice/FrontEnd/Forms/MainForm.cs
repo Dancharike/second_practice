@@ -12,12 +12,14 @@ public class MainForm : Form
     private readonly UIManager _uiManager;
     private string _selectedRole;
     private DatabaseManager _database;
+    private AdminManager _admin;
 
     public MainForm(string connectionString)
     {
         InitializeComponent();
         _database = new DatabaseManager(connectionString);
         _uiManager = new UIManager();
+        _admin = new AdminManager(connectionString);
         Text = "Academic System";
         Width = 1920;
         Height = 1080;
@@ -152,7 +154,9 @@ public class MainForm : Form
                         MessageBox.Show($"{_selectedRole} logged in.");
                         if (_selectedRole == "Admin")
                         {
-                            // loadAdminPage();
+                            LoadAdminPage adminPage = new LoadAdminPage(_admin);
+                            adminPage.Show();
+                            //Hide();
                         }
                         else if (_selectedRole == "Lecturer")
                         {
