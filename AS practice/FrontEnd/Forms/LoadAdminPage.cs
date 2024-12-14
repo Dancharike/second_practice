@@ -41,11 +41,15 @@ public class LoadAdminPage : Form
         CreateButton("Add User", new Point(20, 400), AddUserButtonClick);
         CreateButton("Delete User", new Point(110, 400), DeleteUserButtonClick);
         CreateButton("Create Group", new Point(20, 440), CreateGroupButtonClick);
+        CreateButton("Delete Group", new Point(110, 440), DeleteGroupButtonClick);
         CreateButton("Create Course", new Point(20, 480), CreateCourseButtonClick);
-        CreateButton("Assign Student to Group", new Point(20, 520), AssignStudentToGroupButtonClick);
-        CreateButton("Assign Lecturer to Course", new Point(20, 560), AssignLecturerToCourseButtonClick);
-        CreateButton("Assign Group to Course", new Point(20, 600), AssignGroupToCourseButtonClick);
-        CreateButton("Assign Subjects to Course", new Point(20, 640), AssignSubjectsToCourseButtonClick);
+        CreateButton("Delete Course", new Point(110, 480), DeleteCourseButtonClick);
+        CreateButton("Create Subject", new Point(20, 520), CreateSubjectButtonClick);
+        CreateButton("Delete Subject", new Point(110, 520), DeleteSubjectButtonClick);
+        CreateButton("Assign Student to Group", new Point(20, 560), AssignStudentToGroupButtonClick);
+        CreateButton("Assign Lecturer to Course", new Point(20, 600), AssignLecturerToCourseButtonClick);
+        CreateButton("Assign Group to Course", new Point(20, 640), AssignGroupToCourseButtonClick);
+        CreateButton("Assign Subjects to Course", new Point(20, 680), AssignSubjectsToCourseButtonClick);
 
         CreateLabel("Users Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(500, 10));
         CreateDataGridView(new Point(500, 30), ref _usersGridView); // 1
@@ -155,6 +159,17 @@ public class LoadAdminPage : Form
         LoadData();
         MessageBox.Show("Group created successfully.");
     }
+    
+    private void DeleteGroupButtonClick(object sender, EventArgs e)
+    {
+        string groupIdStr = UIManager.ShowPrompt("Enter Group ID:", "Delete Group");
+        if (int.TryParse(groupIdStr, out int groupId))
+        {
+            _adminManager.DeleteGroup(groupId);
+            LoadData();
+            MessageBox.Show("Group deleted successfully.");
+        }
+    }
 
     private void CreateCourseButtonClick(object sender, EventArgs e)
     {
@@ -164,7 +179,40 @@ public class LoadAdminPage : Form
         LoadData();
         MessageBox.Show("Course created successfully.");
     }
+    
+    private void DeleteCourseButtonClick(object sender, EventArgs e)
+    {
+        string courseIdStr = UIManager.ShowPrompt("Enter Course ID:", "Delete Course");
+        if (int.TryParse(courseIdStr, out int courseId))
+        {
+            _adminManager.DeleteCourse(courseId);
+            LoadData();
+            MessageBox.Show("Course deleted successfully.");
+        }
+    }
+    
+    private void CreateSubjectButtonClick(object sender, EventArgs e)
+    {
+        string subjectName = UIManager.ShowPrompt("Enter Subject Name:", "Create Subject");
+        if (!string.IsNullOrEmpty(subjectName))
+        {
+            _adminManager.CreateSubject(subjectName);
+            LoadData();
+            MessageBox.Show("Subject created successfully.");
+        }
+    }
 
+    private void DeleteSubjectButtonClick(object sender, EventArgs e)
+    {
+        string subjectIdStr = UIManager.ShowPrompt("Enter Subject ID:", "Delete Subject");
+        if (int.TryParse(subjectIdStr, out int subjectId))
+        {
+            _adminManager.DeleteSubject(subjectId);
+            LoadData();
+            MessageBox.Show("Subject deleted successfully.");
+        }
+    }
+    
     private void AssignStudentToGroupButtonClick(object sender, EventArgs e)
     {
         string studentIdStr = UIManager.ShowPrompt("Enter student ID:", "Assign Student to Group");

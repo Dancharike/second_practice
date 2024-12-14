@@ -315,7 +315,63 @@ namespace AS_practice.DataAccess
                 }
             }
         }
+        
+        public void DeleteGroup(int groupId)
+        {
+            using (var connection = GetConnection())
+            {
+                connection.Open();
+                string query = "DELETE FROM student_groups WHERE group_id = @groupId";
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@groupId", groupId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+        
+        public void DeleteCourse(int courseId)
+        {
+            using (var connection = GetConnection())
+            {
+                connection.Open();
+                string query = "DELETE FROM courses WHERE course_id = @courseId";
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@courseId", courseId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
 
+        public void CreateSubject(string subjectName)
+        {
+            using (var connection = GetConnection())
+            {
+                connection.Open();
+                string query = "INSERT INTO subjects (subject_name) VALUES (@subjectName)";
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@subjectName", subjectName);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+        
+        public void DeleteSubject(int subjectId)
+        {
+            using (var connection = GetConnection())
+            {
+                connection.Open();
+                string query = "DELETE FROM subjects WHERE subject_id = @subjectId";
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@subjectId", subjectId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+        
         public List<object> GetAdminData()
         {
             List<object> adminData = new List<object>();
@@ -402,25 +458,7 @@ namespace AS_practice.DataAccess
                 }
                 adminData.Add(lecturerCourses);
                 lecturerCourseReader.Close();
-                /*
-                // this should belong to LecturerManager
-                string gradeQuery = "SELECT grade_id, student_id, lecturer_course_id, grade_value FROM grades";
-                var gradeCommand = new MySqlCommand(gradeQuery, connection);
-                var gradeReader = gradeCommand.ExecuteReader();
-                List<Grade> grades = new List<Grade>();
-                while (gradeReader.Read())
-                {
-                    grades.Add(new Grade
-                    {
-                        GradeId = gradeReader.GetInt32("grade_id"),
-                        StudentId = gradeReader.GetInt32("student_id"),
-                        LecturerCourseId = gradeReader.GetInt32("lecturer_course_id"),
-                        GradeValue = gradeReader.GetInt32("grade_value")
-                    });
-                }
-                adminData.Add(grades);
-                gradeReader.Close();
-                */
+                
                 string userQuery = "SELECT user_id, username, password, role_id, role_specific_id FROM users";
                 var userCommand = new MySqlCommand(userQuery, connection);
                 var userReader = userCommand.ExecuteReader();

@@ -9,8 +9,12 @@ namespace AS_practice.DataAccess.InterfacesForDataAccess
         void CreateGroup(string groupName);
         void CreateCourse(string courseName);
         void AddStudentToGroup(int studentId, int groupId);
-        void AssignGroupToCourse(int groupId, int studentId); // it is better to assign students group to course rather than assign student and they group to course
+        void AssignGroupToCourse(int groupId, int studentId); // it is better to assign students group to course, rather than assign student and group separately to course
         void AssignSubjectsToCourse(int courseId, List<int> subjectIds); // can add up to 7 subjects
         void AssignLecturerToCourse(int lecturerId, int courseId);
+        void DeleteGroup(int groupId);
+        void DeleteCourse(int courseId);
+        void CreateSubject(string subjectName);
+        void DeleteSubject(int subjectId);
     }
 }
