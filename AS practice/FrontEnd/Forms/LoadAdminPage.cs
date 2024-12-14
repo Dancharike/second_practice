@@ -17,9 +17,11 @@ public class LoadAdminPage : Form
     private DataGridView _coursesGridView;
     private DataGridView _groupsGridView;
     private DataGridView _lecturerCoursesGridView;
-    private DataGridView _gradesGridView;
     private DataGridView _usersGridView;
     private DataGridView _rolesGridView;
+    private DataGridView _groupCoursesGridView;
+    private DataGridView _subjectsGridView;
+    private DataGridView _coursesSubjectsGridView;
     
     public LoadAdminPage(AdminManager adminManager)
     {
@@ -44,15 +46,17 @@ public class LoadAdminPage : Form
         CreateButton("Assign Subjects to Group", new Point(20, 260), AssignSubjectsToGroupButtonClick);
         CreateButton("Assign Lecturer to Course", new Point(20, 300), AssignLecturerToCourseButtonClick);
 
-        CreateDataGridView(new Point(500, 0), ref _studentsGridView);
-        CreateDataGridView(new Point(500, 250), ref _lecturersGridView);
-        CreateDataGridView(new Point(500, 500), ref _lecturerCoursesGridView);
-        CreateDataGridView(new Point(500, 750), ref _usersGridView);
-        CreateDataGridView(new Point(1150, 0), ref _coursesGridView);
-        CreateDataGridView(new Point(1150, 250), ref _groupsGridView);
-        CreateDataGridView(new Point(1150, 500), ref _gradesGridView);
-        CreateDataGridView(new Point(1150, 750), ref _rolesGridView);
-
+        CreateDataGridView(new Point(500, 0), ref _usersGridView); // 1
+        CreateDataGridView(new Point(1150, 0), ref _lecturersGridView); // 2
+        CreateDataGridView(new Point(500, 200), ref _studentsGridView); // 3
+        CreateDataGridView(new Point(1150, 200), ref _rolesGridView); // 4
+        CreateDataGridView(new Point(500, 400), ref _coursesGridView); // 5
+        CreateDataGridView(new Point(1150, 400), ref _groupsGridView); // 6
+        CreateDataGridView(new Point(500, 600), ref _groupCoursesGridView); // 7
+        CreateDataGridView(new Point(1150, 600), ref _lecturerCoursesGridView); // 8
+        CreateDataGridView(new Point(500, 800), ref _coursesSubjectsGridView); // 9
+        CreateDataGridView(new Point(1150, 800), ref _subjectsGridView); // 10
+        
         Controls.AddRange(_buttons.ToArray());
         Controls.AddRange(_gridViews.ToArray());
     }
@@ -68,7 +72,7 @@ public class LoadAdminPage : Form
         gridView = new DataGridView
         {
             Location = location,
-            Size = new Size(600, 250),
+            Size = new Size(600, 200),
             AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
         };
         _gridViews.Add(gridView);
@@ -85,9 +89,13 @@ public class LoadAdminPage : Form
             _coursesGridView.DataSource = (List<Course>)adminData[2];
             _lecturersGridView.DataSource = (List<Lecturer>)adminData[3];
             _lecturerCoursesGridView.DataSource = (List<LecturerCourse>)adminData[4];
-            _gradesGridView.DataSource = (List<Grade>)adminData[5];
-            _usersGridView.DataSource = (List<User>)adminData[6];
-            _rolesGridView.DataSource = (List<UserRoles>)adminData[7];
+            //_gradesGridView.DataSource = (List<Grade>)adminData[5]; // admin do not need to see grades for no reason
+            _usersGridView.DataSource = (List<User>)adminData[5];
+            _rolesGridView.DataSource = (List<UserRoles>)adminData[6];
+            //_adminsGridView.DataSource = (List<Admin>)adminData[7]; // there is no any reason for what admin would need to see full list of admins, they can not even be deleted
+            _groupCoursesGridView.DataSource = (List<GroupCourses>)adminData[7];
+            _subjectsGridView.DataSource = (List<Subjects>)adminData[8];
+            _coursesSubjectsGridView.DataSource = (List<CourseSubjects>)adminData[9];
 
         }
         catch (Exception ex)
@@ -132,15 +140,9 @@ public class LoadAdminPage : Form
         string userIdStr = UIManager.ShowPrompt("Enter user ID to delete:", "Delete User");
         if (int.TryParse(userIdStr, out int userId))
         {
-            try
-            {
-                _adminManager.DeleteUser(userId);
-                MessageBox.Show("User deleted successfully.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}");
-            }
+            _adminManager.DeleteUser(userId);
+            LoadData();
+            MessageBox.Show("User deleted successfully.");
         }
         else
         {
@@ -155,6 +157,7 @@ public class LoadAdminPage : Form
         try
         {
             _adminManager.CreateGroup(groupName);
+            LoadData();
             MessageBox.Show("Group created successfully.");
         }
         catch (Exception ex)
@@ -170,6 +173,7 @@ public class LoadAdminPage : Form
         try
         {
             _adminManager.CreateCourse(courseName);
+            LoadData();
             MessageBox.Show("Course created successfully.");
         }
         catch (Exception ex)
@@ -188,6 +192,7 @@ public class LoadAdminPage : Form
             try
             {
                 _adminManager.AddStudentToGroup(studentId, groupId);
+                LoadData();
                 MessageBox.Show("Student assigned to group successfully.");
             }
             catch (Exception ex)
@@ -211,6 +216,7 @@ public class LoadAdminPage : Form
             try
             {
                 _adminManager.AddStudentToCourse(studentId, courseId);
+                LoadData();
                 MessageBox.Show("Student assigned to course successfully.");
             }
             catch (Exception ex)
@@ -243,6 +249,7 @@ public class LoadAdminPage : Form
                 }
 
                 _adminManager.AssignSubjectsToGroup(groupId, subjectIds);
+                LoadData();
                 MessageBox.Show("Subjects assigned to group successfully.");
             }
             catch (Exception ex)
@@ -266,6 +273,7 @@ public class LoadAdminPage : Form
             try
             {
                 _adminManager.AssignLecturerToCourse(lecturerId, courseId);
+                LoadData();
                 MessageBox.Show("Lecturer assigned to course successfully.");
             }
             catch (Exception ex)

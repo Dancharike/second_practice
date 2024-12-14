@@ -131,12 +131,14 @@
         <Compile Include="FrontEnd\UIManager.cs" />
         <Compile Include="Models\Admin.cs" />
         <Compile Include="Models\Course.cs" />
+        <Compile Include="Models\CourseSubjects.cs" />
         <Compile Include="Models\Grade.cs" />
         <Compile Include="Models\GroupCourses.cs" />
         <Compile Include="Models\Lecturer.cs" />
         <Compile Include="Models\LecturerCourse.cs" />
         <Compile Include="Models\Student.cs" />
         <Compile Include="Models\StudentGroup.cs" />
+        <Compile Include="Models\Subjects.cs" />
         <Compile Include="Models\User.cs" />
         <Compile Include="Models\UserRoles.cs" />
         <Compile Include="Program.cs"/>

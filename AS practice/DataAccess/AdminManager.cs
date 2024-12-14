@@ -29,7 +29,7 @@ namespace AS_practice.DataAccess
                 connection.Open();
                 string query = @"
                     INSERT INTO users (username, password, role_id, role_specific_id)
-                    VALUES (@username, @password, @roleId, @roleSpecificId)";
+                    VALUES (@username, @password, @roleId, @roleSpecificId)"; 
 
                 using (var command = new MySqlCommand(query, connection))
                 {
@@ -258,6 +258,8 @@ namespace AS_practice.DataAccess
                 adminData.Add(lecturerCourses);
                 lecturerCourseReader.Close();
                 
+                /*
+                // this should belong to LecturerManager
                 string gradeQuery = "SELECT grade_id, student_id, lecturer_course_id, grade_value FROM grades";
                 var gradeCommand = new MySqlCommand(gradeQuery, connection);
                 var gradeReader = gradeCommand.ExecuteReader();
@@ -274,6 +276,7 @@ namespace AS_practice.DataAccess
                 }
                 adminData.Add(grades);
                 gradeReader.Close();
+                */
                 
                 string userQuery = "SELECT user_id, username, password, role_id, role_specific_id FROM users";
                 var userCommand = new MySqlCommand(userQuery, connection);
@@ -307,9 +310,72 @@ namespace AS_practice.DataAccess
                 }
                 adminData.Add(roles);
                 roleReader.Close();
-
+                
+                /*
+                string adminQuery = "SELECT admin_id, first_name, last_name FROM admins";
+                var adminCommand = new MySqlCommand(adminQuery, connection);
+                var adminReader = adminCommand.ExecuteReader();
+                List<Admin> admins = new List<Admin>();
+                while (adminReader.Read())
+                {
+                    admins.Add(new Admin
+                    {
+                        AdminId = adminReader.GetInt32("admin_id"),
+                        FirstName = adminReader.GetString("first_name"),
+                        LastName = adminReader.GetString("last_name")
+                    });
+                }
+                adminData.Add(admins);
+                adminReader.Close();
+                */
+                
+                string groupCourseQuery = "SELECT group_course_id, group_id, course_id FROM group_courses";
+                var groupCourseCommand = new MySqlCommand(groupCourseQuery, connection);
+                var groupCourseReader = groupCourseCommand.ExecuteReader();
+                List<GroupCourses> groupCourses = new List<GroupCourses>();
+                while (groupCourseReader.Read())
+                {
+                    groupCourses.Add(new GroupCourses
+                    {
+                        GroupCoursesId = groupCourseReader.GetInt32("group_course_id"),
+                        GroupId = groupCourseReader.GetInt32("group_id"),
+                        CourseId = groupCourseReader.GetInt32("course_id")
+                    });
+                }
+                adminData.Add(groupCourses);
+                groupCourseReader.Close();
+                
+                string subjectsQuery = "SELECT subject_id, subject_name FROM subjects";
+                var subjectsCommand = new MySqlCommand(subjectsQuery, connection);
+                var subjectsReader = subjectsCommand.ExecuteReader();
+                List<Subjects> subjects = new List<Subjects>();
+                while (subjectsReader.Read())
+                {
+                    subjects.Add(new Subjects
+                    {
+                        SubjectId = subjectsReader.GetInt32("subject_id"),
+                        SubjectName = subjectsReader.GetString("subject_name")
+                    });
+                }
+                adminData.Add(subjects);
+                subjectsReader.Close();
+                
+                string courseSubjectsQuery = "SELECT course_subject_id, course_id, subject_id FROM course_subjects";
+                var courseSubjectsCommand = new MySqlCommand(courseSubjectsQuery, connection);
+                var courseSubjectsReader = courseSubjectsCommand.ExecuteReader();
+                List<CourseSubjects> courseSubjects = new List<CourseSubjects>();
+                while (courseSubjectsReader.Read())
+                {
+                    courseSubjects.Add(new CourseSubjects
+                    {
+                        CourseSubjectId = courseSubjectsReader.GetInt32("course_subject_id"),
+                        CourseId = courseSubjectsReader.GetInt32("course_id"),
+                        SubjectId = courseSubjectsReader.GetInt32("subject_id")
+                    });
+                }
+                adminData.Add(courseSubjects);
+                courseSubjectsReader.Close();
             }
-
             return adminData;
         }
     }
