@@ -21,27 +21,88 @@ namespace AS_practice.DataAccess
             _student = new StudentValidation(connectionString);
             _role = new RoleValidation(connectionString);
         }
-
-        public void AddUser(string username, string password, string role, int roleSpecificId)
+        
+        public void AddUser(string username, string password, string role)
         {
             using (var connection = GetConnection())
             {
                 connection.Open();
-                string query = @"
-                    INSERT INTO users (username, password, role_id, role_specific_id)
-                    VALUES (@username, @password, @roleId, @roleSpecificId)"; 
+                int roleSpecificId = 0;
+                
+                if (role == "Admin")
+                {
+                    var insertAdminQuery = "INSERT INTO admins (first_name, last_name) VALUES (@firstName, @lastName)";
+                    var getAdminIdQuery = "SELECT LAST_INSERT_ID()";
+                    using (var command = new MySqlCommand(insertAdminQuery, connection))
+                    {
+                        command.Parameters.AddWithValue("@firstName", username);
+                        command.Parameters.AddWithValue("@lastName", password);
+                        command.ExecuteNonQuery();
+                    }
 
-                using (var command = new MySqlCommand(query, connection))
+                    using (var command = new MySqlCommand(getAdminIdQuery, connection))
+                    {
+                        roleSpecificId = Convert.ToInt32(command.ExecuteScalar());
+                    }
+                }
+                
+                if (role == "Lecturer")
+                {
+                    var insertLecturerQuery = "INSERT INTO lecturers (first_name, last_name) VALUES (@firstName, @lastName)";
+                    var getLecturerIdQuery = "SELECT LAST_INSERT_ID()";
+                    using (var command = new MySqlCommand(insertLecturerQuery, connection))
+                    {
+                        command.Parameters.AddWithValue("@firstName", username);
+                        command.Parameters.AddWithValue("@lastName", password);
+                        command.ExecuteNonQuery();
+                    }
+
+                    using (var command = new MySqlCommand(getLecturerIdQuery, connection))
+                    {
+                        roleSpecificId = Convert.ToInt32(command.ExecuteScalar());
+                    }
+                }
+                
+                if (role == "Student")
+                {
+                    var insertStudentQuery = "INSERT INTO students (first_name, last_name) VALUES (@firstName, @lastName)";
+                    var getStudentIdQuery = "SELECT LAST_INSERT_ID()";
+                    using (var command = new MySqlCommand(insertStudentQuery, connection))
+                    {
+                        command.Parameters.AddWithValue("@firstName", username);
+                        command.Parameters.AddWithValue("@lastName", password);
+                        command.ExecuteNonQuery();
+                    }
+
+                    using (var command = new MySqlCommand(getStudentIdQuery, connection))
+                    {
+                        roleSpecificId = Convert.ToInt32(command.ExecuteScalar());
+                    }
+                }
+                
+                var insertUserQuery = @"
+            INSERT INTO users (username, password, role_id, role_specific_id) 
+            VALUES (@username, @password, @roleId, @roleSpecificId)";
+        
+                using (var command = new MySqlCommand(insertUserQuery, connection))
                 {
                     command.Parameters.AddWithValue("@username", username);
                     command.Parameters.AddWithValue("@password", password);
-                    command.Parameters.AddWithValue("@roleId", role);
+                    command.Parameters.AddWithValue("@roleId", GetRoleId(role));
                     command.Parameters.AddWithValue("@roleSpecificId", roleSpecificId);
                     command.ExecuteNonQuery();
                 }
             }
         }
 
+        private int GetRoleId(string roleName)
+        {
+            if (roleName == "Admin") return 1;
+            if (roleName == "Lecturer") return 2;
+            if (roleName == "Student") return 3;
+            throw new ArgumentException("Invalid role name.");
+        }
+        
         public void DeleteUser(int userId)
         {
             using (var connection = GetConnection())

@@ -108,33 +108,13 @@ public class LoadAdminPage : Form
     {
         string username = UIManager.ShowPrompt("Enter username:", "Add User");
         string password = UIManager.ShowPrompt("Enter password:", "Add User");
-        string role = UIManager.ShowPrompt("Enter role (Admin/Lecturer/Student):", "Add User");
-        int roleSpecificId = 0;
-
-        if (role == "Admin")
-        {
-            roleSpecificId = int.Parse(UIManager.ShowPrompt("Enter Admin ID:", "Add User"));
-        }
-        else if (role == "Lecturer")
-        {
-            roleSpecificId = int.Parse(UIManager.ShowPrompt("Enter Lecturer ID:", "Add User"));
-        }
-        else if (role == "Student")
-        {
-            roleSpecificId = int.Parse(UIManager.ShowPrompt("Enter Student ID:", "Add User"));
-        }
-
-        try
-        {
-            _adminManager.AddUser(username, password, role, roleSpecificId);
-            MessageBox.Show("User added successfully.");
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Error: {ex.Message}");
-        }
+        string role = UIManager.ShowPrompt("Enter RoleName:", "Add User");
+        
+        _adminManager.AddUser(username, password, role);
+        LoadData();
+        MessageBox.Show("User added successfully.");
     }
-
+    
     private void DeleteUserButtonClick(object sender, EventArgs e)
     {
         string userIdStr = UIManager.ShowPrompt("Enter user ID to delete:", "Delete User");
