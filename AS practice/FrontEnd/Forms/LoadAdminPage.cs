@@ -11,6 +11,7 @@ public class LoadAdminPage : Form
     private readonly AdminManager _adminManager;
     private readonly UIManager _uiManager;
     private readonly List<Button> _buttons = new List<Button>();
+    private readonly List<Label> _labels = new List<Label>();
     private readonly List<DataGridView> _gridViews = new List<DataGridView>();
     private DataGridView _studentsGridView;
     private DataGridView _lecturersGridView;
@@ -36,28 +37,39 @@ public class LoadAdminPage : Form
         Text = "Admin Panel";
         Size = new Size(1920, 1080);
         BackColor = Color.Black;
+        
+        CreateButton("Add User", new Point(20, 400), AddUserButtonClick);
+        CreateButton("Delete User", new Point(110, 400), DeleteUserButtonClick);
+        CreateButton("Create Group", new Point(20, 440), CreateGroupButtonClick);
+        CreateButton("Create Course", new Point(20, 480), CreateCourseButtonClick);
+        CreateButton("Assign Student to Group", new Point(20, 520), AssignStudentToGroupButtonClick);
+        CreateButton("Assign Lecturer to Course", new Point(20, 560), AssignLecturerToCourseButtonClick);
+        CreateButton("Assign Group to Course", new Point(20, 600), AssignGroupToCourseButtonClick);
+        CreateButton("Assign Subjects to Course", new Point(20, 640), AssignSubjectsToCourseButtonClick);
 
-        CreateButton("Add User", new Point(20, 20), AddUserButtonClick);
-        CreateButton("Delete User", new Point(20, 60), DeleteUserButtonClick);
-        CreateButton("Create Group", new Point(20, 100), CreateGroupButtonClick);
-        CreateButton("Create Course", new Point(20, 140), CreateCourseButtonClick);
-        CreateButton("Assign Student to Group", new Point(20, 180), AssignStudentToGroupButtonClick);
-        CreateButton("Assign Student to Course", new Point(20, 220), AssignStudentToCourseButtonClick);
-        CreateButton("Assign Subjects to Group", new Point(20, 260), AssignSubjectsToGroupButtonClick);
-        CreateButton("Assign Lecturer to Course", new Point(20, 300), AssignLecturerToCourseButtonClick);
-
-        CreateDataGridView(new Point(500, 0), ref _usersGridView); // 1
-        CreateDataGridView(new Point(1150, 0), ref _lecturersGridView); // 2
-        CreateDataGridView(new Point(500, 200), ref _studentsGridView); // 3
-        CreateDataGridView(new Point(1150, 200), ref _rolesGridView); // 4
-        CreateDataGridView(new Point(500, 400), ref _coursesGridView); // 5
-        CreateDataGridView(new Point(1150, 400), ref _groupsGridView); // 6
-        CreateDataGridView(new Point(500, 600), ref _groupCoursesGridView); // 7
-        CreateDataGridView(new Point(1150, 600), ref _lecturerCoursesGridView); // 8
-        CreateDataGridView(new Point(500, 800), ref _coursesSubjectsGridView); // 9
-        CreateDataGridView(new Point(1150, 800), ref _subjectsGridView); // 10
+        CreateLabel("Users Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(500, 10));
+        CreateDataGridView(new Point(500, 30), ref _usersGridView); // 1
+        CreateLabel("Lecturers Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(1150, 10));
+        CreateDataGridView(new Point(1150, 30), ref _lecturersGridView); // 2
+        CreateLabel("Students Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(500, 210));
+        CreateDataGridView(new Point(500, 230), ref _studentsGridView); // 3
+        CreateLabel("Roles Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(1150, 210));
+        CreateDataGridView(new Point(1150, 230), ref _rolesGridView); // 4
+        CreateLabel("Courses Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(500, 410));
+        CreateDataGridView(new Point(500, 430), ref _coursesGridView); // 5
+        CreateLabel("Groups Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(1150, 410));
+        CreateDataGridView(new Point(1150, 430), ref _groupsGridView); // 6
+        CreateLabel("Groups Assigned to Courses Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(500, 610));
+        CreateDataGridView(new Point(500, 630), ref _groupCoursesGridView); // 7
+        CreateLabel("Lecturers Assigned to Courses Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(1150, 610));
+        CreateDataGridView(new Point(1150, 630), ref _lecturerCoursesGridView); // 8
+        CreateLabel("Subjects in Courses Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(500, 810));
+        CreateDataGridView(new Point(500, 830), ref _coursesSubjectsGridView); // 9
+        CreateLabel("Subjects Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(1150, 810));
+        CreateDataGridView(new Point(1150, 830), ref _subjectsGridView); // 10
         
         Controls.AddRange(_buttons.ToArray());
+        Controls.AddRange(_labels.ToArray());
         Controls.AddRange(_gridViews.ToArray());
     }
 
@@ -67,12 +79,18 @@ public class LoadAdminPage : Form
         _buttons.Add(button);
     }
 
+    private void CreateLabel(string text, Font font, Color color, Point location)
+    {
+        var label = _uiManager.CreateLabel(text, font, color, location);
+        _labels.Add(label);
+    }
+
     private void CreateDataGridView(Point location, ref DataGridView gridView)
     {
         gridView = new DataGridView
         {
             Location = location,
-            Size = new Size(600, 200),
+            Size = new Size(600, 170),
             AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
         };
         _gridViews.Add(gridView);
@@ -96,7 +114,6 @@ public class LoadAdminPage : Form
             _groupCoursesGridView.DataSource = (List<GroupCourses>)adminData[7];
             _subjectsGridView.DataSource = (List<Subjects>)adminData[8];
             _coursesSubjectsGridView.DataSource = (List<CourseSubjects>)adminData[9];
-
         }
         catch (Exception ex)
         {
@@ -133,33 +150,19 @@ public class LoadAdminPage : Form
     private void CreateGroupButtonClick(object sender, EventArgs e)
     {
         string groupName = UIManager.ShowPrompt("Enter group name:", "Create Group");
-
-        try
-        {
-            _adminManager.CreateGroup(groupName);
-            LoadData();
-            MessageBox.Show("Group created successfully.");
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Error: {ex.Message}");
-        }
+        
+        _adminManager.CreateGroup(groupName);
+        LoadData();
+        MessageBox.Show("Group created successfully.");
     }
 
     private void CreateCourseButtonClick(object sender, EventArgs e)
     {
         string courseName = UIManager.ShowPrompt("Enter course name:", "Create Course");
-
-        try
-        {
-            _adminManager.CreateCourse(courseName);
-            LoadData();
-            MessageBox.Show("Course created successfully.");
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Error: {ex.Message}");
-        }
+        
+        _adminManager.CreateCourse(courseName);
+        LoadData();
+        MessageBox.Show("Course created successfully.");
     }
 
     private void AssignStudentToGroupButtonClick(object sender, EventArgs e)
@@ -169,16 +172,9 @@ public class LoadAdminPage : Form
 
         if (int.TryParse(studentIdStr, out int studentId) && int.TryParse(groupIdStr, out int groupId))
         {
-            try
-            {
-                _adminManager.AddStudentToGroup(studentId, groupId);
-                LoadData();
-                MessageBox.Show("Student assigned to group successfully.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}");
-            }
+            _adminManager.AddStudentToGroup(studentId, groupId);
+            LoadData();
+            MessageBox.Show("Student assigned to group successfully.");
         }
         else
         {
@@ -186,36 +182,29 @@ public class LoadAdminPage : Form
         }
     }
 
-    private void AssignStudentToCourseButtonClick(object sender, EventArgs e)
+    private void AssignGroupToCourseButtonClick(object sender, EventArgs e)
     {
-        string studentIdStr = UIManager.ShowPrompt("Enter student ID:", "Assign Student to Course");
-        string courseIdStr = UIManager.ShowPrompt("Enter course ID:", "Assign Student to Course");
+        string courseIdStr = UIManager.ShowPrompt("Enter course ID:", "Assign Group to Course");
+        string groupIdStr = UIManager.ShowPrompt("Enter group ID:", "Assign Group to Course");
 
-        if (int.TryParse(studentIdStr, out int studentId) && int.TryParse(courseIdStr, out int courseId))
+        if (int.TryParse(courseIdStr, out int studentId) && int.TryParse(groupIdStr, out int groupId))
         {
-            try
-            {
-                _adminManager.AddStudentToCourse(studentId, courseId);
-                LoadData();
-                MessageBox.Show("Student assigned to course successfully.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}");
-            }
+            _adminManager.AssignGroupToCourse(groupId, studentId);
+            LoadData();
+            MessageBox.Show("Group assigned to course successfully.");
         }
         else
         {
             MessageBox.Show("Invalid input.");
         }
     }
-
-    private void AssignSubjectsToGroupButtonClick(object sender, EventArgs e)
+    
+    private void AssignSubjectsToCourseButtonClick(object sender, EventArgs e)
     {
-        string groupIdStr = UIManager.ShowPrompt("Enter group ID:", "Assign Subjects to Group");
-        string subjectIdsStr = UIManager.ShowPrompt("Enter subject IDs (comma-separated):", "Assign Subjects to Group");
+        string courseIdStr = UIManager.ShowPrompt("Enter course ID:", "Assign Subjects to Course");
+        string subjectIdsStr = UIManager.ShowPrompt("Enter subject IDs (comma-separated):", "Assign Subjects to Course");
 
-        if (int.TryParse(groupIdStr, out int groupId))
+        if (int.TryParse(courseIdStr, out int courseId))
         {
             try
             {
@@ -228,7 +217,7 @@ public class LoadAdminPage : Form
                     }
                 }
 
-                _adminManager.AssignSubjectsToGroup(groupId, subjectIds);
+                _adminManager.AssignSubjectsToCourse(courseId, subjectIds);
                 LoadData();
                 MessageBox.Show("Subjects assigned to group successfully.");
             }
@@ -239,7 +228,7 @@ public class LoadAdminPage : Form
         }
         else
         {
-            MessageBox.Show("Invalid group ID.");
+            MessageBox.Show("Invalid course ID.");
         }
     }
 
@@ -250,16 +239,9 @@ public class LoadAdminPage : Form
 
         if (int.TryParse(lecturerIdStr, out int lecturerId) && int.TryParse(courseIdStr, out int courseId))
         {
-            try
-            {
-                _adminManager.AssignLecturerToCourse(lecturerId, courseId);
-                LoadData();
-                MessageBox.Show("Lecturer assigned to course successfully.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}");
-            }
+            _adminManager.AssignLecturerToCourse(lecturerId, courseId);
+            LoadData();
+            MessageBox.Show("Lecturer assigned to course successfully.");
         }
         else
         {
