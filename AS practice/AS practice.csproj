@@ -118,6 +118,8 @@
             <DependentUpon>Form1.cs</DependentUpon>
         </Compile>
         <Compile Include="FrontEnd\Forms\LoadAdminPage.cs" />
+        <Compile Include="FrontEnd\Forms\LoadLecturerPage.cs" />
+        <Compile Include="FrontEnd\Forms\LoadStudentPage.cs" />
         <Compile Include="FrontEnd\Forms\MainForm.cs" />
         <Compile Include="FrontEnd\Forms\ManageCoursesForm.cs" />
         <Compile Include="FrontEnd\Forms\ManageStudentsForm.cs" />
@@ -133,6 +135,7 @@
         <Compile Include="Models\Course.cs" />
         <Compile Include="Models\CourseSubjects.cs" />
         <Compile Include="Models\Grade.cs" />
+        <Compile Include="Models\Grades.cs" />
         <Compile Include="Models\GroupCourses.cs" />
         <Compile Include="Models\Lecturer.cs" />
         <Compile Include="Models\LecturerCourse.cs" />

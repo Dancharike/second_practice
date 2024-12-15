@@ -13,6 +13,8 @@ public class MainForm : Form
     private string _selectedRole;
     private DatabaseManager _database;
     private AdminManager _admin;
+    private LecturerManager _lecturer;
+    private StudentManager _student;
 
     public MainForm(string connectionString)
     {
@@ -159,11 +161,13 @@ public class MainForm : Form
                         }
                         else if (_selectedRole == "Lecturer")
                         {
-                            // loadLecturerPage();
+                            LoadLecturerPage lecturerPage = new LoadLecturerPage(_lecturer);
+                            lecturerPage.Show();
                         }
                         else if (_selectedRole == "Student")
                         {
-                            // loadStudentPage();
+                            LoadStudentPage studentPage = new LoadStudentPage(_student);
+                            studentPage.Show();
                         }
                     }
                     else
