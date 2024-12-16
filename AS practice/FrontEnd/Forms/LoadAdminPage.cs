@@ -23,6 +23,7 @@ public class LoadAdminPage : Form
     private DataGridView _groupCoursesGridView;
     private DataGridView _subjectsGridView;
     private DataGridView _coursesSubjectsGridView;
+    private DataGridView _lecturerSubjectsGridView;
     
     public LoadAdminPage(AdminManager adminManager)
     {
@@ -49,7 +50,7 @@ public class LoadAdminPage : Form
         CreateButton("Assign Student to Group", new Point(20, 560), AssignStudentToGroupButtonClick);
         CreateButton("Assign Lecturer to Course", new Point(20, 600), AssignLecturerToCourseButtonClick);
         CreateButton("Assign Group to Course", new Point(20, 640), AssignGroupToCourseButtonClick);
-        CreateButton("Assign Subjects to Course", new Point(20, 680), AssignSubjectsToCourseButtonClick);
+        CreateButton("Assign Subjects to Lecturer", new Point(20, 680), AssignSubjectToLecturerButtonClick);
 
         CreateLabel("Users Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(500, 10));
         CreateDataGridView(new Point(500, 30), ref _usersGridView); // 1
@@ -67,8 +68,8 @@ public class LoadAdminPage : Form
         CreateDataGridView(new Point(500, 630), ref _groupCoursesGridView); // 7
         CreateLabel("Lecturers Assigned to Courses Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(1150, 610));
         CreateDataGridView(new Point(1150, 630), ref _lecturerCoursesGridView); // 8
-        CreateLabel("Subjects in Courses Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(500, 810));
-        CreateDataGridView(new Point(500, 830), ref _coursesSubjectsGridView); // 9
+        CreateLabel("Lecturer Subjects Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(500, 810));
+        CreateDataGridView(new Point(500, 830), ref _lecturerSubjectsGridView); // 9
         CreateLabel("Subjects Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(1150, 810));
         CreateDataGridView(new Point(1150, 830), ref _subjectsGridView); // 10
         
@@ -117,7 +118,7 @@ public class LoadAdminPage : Form
             //_adminsGridView.DataSource = (List<Admin>)adminData[7]; // there is no any reason for what admin would need to see full list of admins, they can not even be deleted
             _groupCoursesGridView.DataSource = (List<GroupCourses>)adminData[7];
             _subjectsGridView.DataSource = (List<Subjects>)adminData[8];
-            _coursesSubjectsGridView.DataSource = (List<CourseSubjects>)adminData[9];
+            _lecturerSubjectsGridView.DataSource = (List<LecturerSubjects>)adminData[9];
         }
         catch (Exception ex)
         {
@@ -247,27 +248,18 @@ public class LoadAdminPage : Form
         }
     }
     
-    private void AssignSubjectsToCourseButtonClick(object sender, EventArgs e)
+    private void AssignSubjectToLecturerButtonClick(object sender, EventArgs e)
     {
-        string courseIdStr = UIManager.ShowPrompt("Enter course ID:", "Assign Subjects to Course");
-        string subjectIdsStr = UIManager.ShowPrompt("Enter subject IDs (comma-separated):", "Assign Subjects to Course");
+        string lecturerIdStr = UIManager.ShowPrompt("Enter lecturer ID:", "Assign Subject to Lecturer");
+        string subjectIdStr = UIManager.ShowPrompt("Enter subject ID:", "Assign Subject to Lecturer");
 
-        if (int.TryParse(courseIdStr, out int courseId))
+        if (int.TryParse(lecturerIdStr, out int lecturerId) && int.TryParse(subjectIdStr, out int subjectId))
         {
             try
             {
-                var subjectIds = new List<int>();
-                foreach (var id in subjectIdsStr.Split(','))
-                {
-                    if (int.TryParse(id.Trim(), out int subjectId))
-                    {
-                        subjectIds.Add(subjectId);
-                    }
-                }
-
-                _adminManager.AssignSubjectsToCourse(courseId, subjectIds);
+                _adminManager.AssignSubjectToLecturer(lecturerId, subjectId);
                 LoadData();
-                MessageBox.Show("Subjects assigned to group successfully.");
+                MessageBox.Show("Subject successfully assigned to the lecturer.");
             }
             catch (Exception ex)
             {
@@ -276,10 +268,10 @@ public class LoadAdminPage : Form
         }
         else
         {
-            MessageBox.Show("Invalid course ID.");
+            MessageBox.Show("Invalid input. Please enter valid IDs.");
         }
     }
-
+    
     private void AssignLecturerToCourseButtonClick(object sender, EventArgs e)
     {
         string lecturerIdStr = UIManager.ShowPrompt("Enter lecturer ID:", "Assign Lecturer to Course");

@@ -194,7 +194,7 @@ namespace AS_practice.DataAccess
                 }
             }
         }
-
+        
         public void AddStudentToGroup(int studentId, int groupId)
         {
             if (!_group.GroupExists(groupId))
@@ -227,8 +227,8 @@ namespace AS_practice.DataAccess
                 connection.Open();
 
                 string query = @"
-            INSERT INTO group_courses (group_id, course_id)
-            VALUES (@groupId, @courseId)";
+                        INSERT INTO group_courses (group_id, course_id)
+                        VALUES (@groupId, @courseId)";
         
                 using (var command = new MySqlCommand(query, connection))
                 {
@@ -272,35 +272,27 @@ namespace AS_practice.DataAccess
             return students;
         }
         
-        public void AssignSubjectsToCourse(int courseId, List<int> subjectIds)
+        public void AssignSubjectToLecturer(int lecturerId, int subjectId)
         {
-            if (subjectIds == null || subjectIds.Count == 0 || subjectIds.Count > 7)
+            if (lecturerId <= 0 || subjectId <= 0)
             {
-                throw new ArgumentException("You must provide between 1 and 7 subject IDs.");
+                throw new ArgumentException("Both lecturer ID and subject ID must be valid.");
             }
 
             using (var connection = GetConnection())
             {
                 connection.Open();
-
-                foreach (var subjectId in subjectIds)
+                
+                string query = "INSERT INTO lecturer_subjects (lecturer_id, subject_id) VALUES (@lecturerId, @subjectId)";
+                using (var command = new MySqlCommand(query, connection))
                 {
-                    if (!_course.CourseExists(subjectId))
-                    {
-                        throw new Exception($"Subject with ID {subjectId} not found.");
-                    }
-
-                    string query = "INSERT INTO course_subjects (course_id, subject_id) VALUES (@courseId, @subjectId)";
-                    using (var command = new MySqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@courseId", courseId);
-                        command.Parameters.AddWithValue("@subjectId", subjectId);
-                        command.ExecuteNonQuery();
-                    }
+                    command.Parameters.AddWithValue("@lecturerId", lecturerId);
+                    command.Parameters.AddWithValue("@subjectId", subjectId);
+                    command.ExecuteNonQuery();
                 }
             }
         }
-
+        
         public void AssignLecturerToCourse(int lecturerId, int courseId)
         {
             using (var connection = GetConnection())
@@ -523,21 +515,25 @@ namespace AS_practice.DataAccess
                 adminData.Add(subjects);
                 subjectsReader.Close();
                 
-                string courseSubjectsQuery = "SELECT course_subject_id, course_id, subject_id FROM course_subjects";
-                var courseSubjectsCommand = new MySqlCommand(courseSubjectsQuery, connection);
-                var courseSubjectsReader = courseSubjectsCommand.ExecuteReader();
-                List<CourseSubjects> courseSubjects = new List<CourseSubjects>();
-                while (courseSubjectsReader.Read())
+                string lecturerSubjectsQuerry = @"
+                    SELECT l.first_name, l.last_name, s.subject_name
+                    FROM lecturer_subjects ls
+                    JOIN lecturers l ON ls.lecturer_id = l.lecturer_id
+                    JOIN subjects s ON ls.subject_id = s.subject_id";
+
+                var lecturerSubjectsCommand = new MySqlCommand(lecturerSubjectsQuerry, connection);
+                var lecturerSubjectsReader = lecturerSubjectsCommand.ExecuteReader();
+                List<LecturerSubjects> lecturerSubjects = new List<LecturerSubjects>();
+                while (lecturerSubjectsReader.Read())
                 {
-                    courseSubjects.Add(new CourseSubjects
+                    lecturerSubjects.Add(new LecturerSubjects
                     {
-                        CourseSubjectId = courseSubjectsReader.GetInt32("course_subject_id"),
-                        CourseId = courseSubjectsReader.GetInt32("course_id"),
-                        SubjectId = courseSubjectsReader.GetInt32("subject_id")
+                        LecturerName = lecturerSubjectsReader.GetString("first_name") + " " + lecturerSubjectsReader.GetString("last_name"),
+                        SubjectName = lecturerSubjectsReader.GetString("subject_name")
                     });
                 }
-                adminData.Add(courseSubjects);
-                courseSubjectsReader.Close();
+                adminData.Add(lecturerSubjects);
+                lecturerSubjectsReader.Close();
             }
             return adminData;
         }

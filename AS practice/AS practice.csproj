@@ -140,6 +140,7 @@
         <Compile Include="Models\GroupCourses.cs" />
         <Compile Include="Models\Lecturer.cs" />
         <Compile Include="Models\LecturerCourse.cs" />
+        <Compile Include="Models\LecturerSubjects.cs" />
         <Compile Include="Models\Student.cs" />
         <Compile Include="Models\StudentGroup.cs" />
         <Compile Include="Models\Subjects.cs" />
