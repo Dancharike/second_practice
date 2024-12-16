@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using AS_practice.DataAccess;
 using AS_practice.FrontEnd;
+using AS_practice.Models;
 
 namespace AS_practice
 {
@@ -14,6 +15,7 @@ namespace AS_practice
         private readonly List<Button> _buttons = new List<Button>();
         private readonly List<Label> _labels = new List<Label>();
         private readonly List<DataGridView> _gridViews = new List<DataGridView>();
+        private DataGridView _coursesSubjectsGridView;
 
         public LoadStudentPage(StudentManager studentManager)
         {
@@ -29,7 +31,8 @@ namespace AS_practice
             Size = new Size(1920, 1080);
             BackColor = Color.Black;
             
-            
+            CreateLabel("Course Subjects Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(500, 10));
+            CreateDataGridView(new Point(500, 30), ref _coursesSubjectsGridView);
             
             Controls.AddRange(_buttons.ToArray());
             Controls.AddRange(_labels.ToArray());
@@ -61,7 +64,16 @@ namespace AS_practice
 
         private void LoadData()
         {
-            
+            try
+            {
+                var studentData = _studentManager.GetStudentData();
+                
+                _coursesSubjectsGridView.DataSource = (List<CourseSubjects>)studentData[0];
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading data: {ex.Message}\nStack Trace: {ex.StackTrace}");
+            }
         }
     }
 }

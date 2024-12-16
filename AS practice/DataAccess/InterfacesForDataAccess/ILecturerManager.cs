@@ -2,7 +2,7 @@
 {
     public interface ILecturerManager
     {
-        void AddGrade(int studentId, int subjectId, int grade);
-        void EditGrade(int studentId, int subjectId, int grade);
+        void AddGrade(int studentId, int lecturerCourseId, int categoryId, int gradeValue);
+        void EditGrade(int gradeId, int gradeValue);
     }
 }

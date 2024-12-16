@@ -1,12 +1,6 @@
 C:\Users\Denis\RiderProjects\second_practice\AS practice\bin\Debug\AS_practice.exe.config
 C:\Users\Denis\RiderProjects\second_practice\AS practice\bin\Debug\AS_practice.exe
 C:\Users\Denis\RiderProjects\second_practice\AS practice\bin\Debug\AS_practice.pdb
-C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS practice.csproj.AssemblyReference.cache
-C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS_practice.Properties.Resources.resources
-C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS practice.csproj.GenerateResource.cache
-C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS practice.csproj.CoreCompileInputs.cache
-C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS_practice.exe
-C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS_practice.pdb
 C:\Users\Denis\RiderProjects\second_practice\AS practice\bin\Debug\BouncyCastle.Cryptography.dll
 C:\Users\Denis\RiderProjects\second_practice\AS practice\bin\Debug\Google.Protobuf.dll
 C:\Users\Denis\RiderProjects\second_practice\AS practice\bin\Debug\K4os.Compression.LZ4.dll
@@ -39,5 +33,11 @@ C:\Users\Denis\RiderProjects\second_practice\AS practice\bin\Debug\System.Memory
 C:\Users\Denis\RiderProjects\second_practice\AS practice\bin\Debug\System.Numerics.Vectors.xml
 C:\Users\Denis\RiderProjects\second_practice\AS practice\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\Denis\RiderProjects\second_practice\AS practice\bin\Debug\System.Threading.Tasks.Extensions.xml
-C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS pract.D5BBC6E2.Up2Date
+C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS practice.csproj.AssemblyReference.cache
 C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\MainForm.resources
+C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS_practice.Properties.Resources.resources
+C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS practice.csproj.GenerateResource.cache
+C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS practice.csproj.CoreCompileInputs.cache
+C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS pract.D5BBC6E2.Up2Date
+C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS_practice.exe
+C:\Users\Denis\RiderProjects\second_practice\AS practice\obj\Debug\AS_practice.pdb

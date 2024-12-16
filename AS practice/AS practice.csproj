@@ -135,6 +135,7 @@
         <Compile Include="Models\Course.cs" />
         <Compile Include="Models\CourseSubjects.cs" />
         <Compile Include="Models\Grade.cs" />
+        <Compile Include="Models\GradeCategories.cs" />
         <Compile Include="Models\Grades.cs" />
         <Compile Include="Models\GroupCourses.cs" />
         <Compile Include="Models\Lecturer.cs" />

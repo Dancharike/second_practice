@@ -22,6 +22,8 @@ public class MainForm : Form
         _database = new DatabaseManager(connectionString);
         _uiManager = new UIManager();
         _admin = new AdminManager(connectionString);
+        _lecturer = new LecturerManager(connectionString);
+        _student = new StudentManager(connectionString);
         Text = "Academic System";
         Width = 1920;
         Height = 1080;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using AS_practice.DataAccess.InterfacesForDataAccess;
 using AS_practice.Models;
@@ -7,42 +8,41 @@ namespace AS_practice.DataAccess
 {
     public class LecturerManager : DatabaseBase, ILecturerManager
     {
-        public LecturerManager(string connectionString) : base(connectionString)
-        {
-        }
+        public LecturerManager(string connectionString) : base(connectionString) {}
 
-        public void AddGrade(int studentId, int subjectId, int grade)
+        public void AddGrade(int studentId, int lecturerCourseId, int categoryId, int gradeValue)
         {
             using (var connection = GetConnection())
             {
                 connection.Open();
 
-                string query = @"INSERT INTO subject_grades (student_id, subject_id, grade_value) 
-                         VALUES (@studentId, @subjectId, @grade)";
+                string query = @"INSERT INTO grades 
+                        (student_id, lecturer_course_id, category_id, grade_value)
+                        VALUES (@studentId, @lecturerCourseId, @categoryId, @gradeValue)";
                 using (var command = new MySqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@studentId", studentId);
-                    command.Parameters.AddWithValue("@subjectId", subjectId);
-                    command.Parameters.AddWithValue("@grade", grade);
+                    command.Parameters.AddWithValue("@lecturerCourseId", lecturerCourseId);
+                    command.Parameters.AddWithValue("@categoryId", categoryId);
+                    command.Parameters.AddWithValue("@gradeValue", gradeValue);
                     command.ExecuteNonQuery();
                 }
             }
         }
-
-        public void EditGrade(int studentId, int subjectId, int grade)
+        
+        public void EditGrade(int gradeId, int gradeValue)
         {
             using (var connection = GetConnection())
             {
                 connection.Open();
 
-                string query = @"UPDATE subject_grades 
-                         SET grade_value = @grade 
-                         WHERE student_id = @studentId AND subject_id = @subjectId";
+                string query = @"UPDATE grades 
+                         SET grade_value = @gradeValue WHERE grade_id = @gradeId";
+                         
                 using (var command = new MySqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@studentId", studentId);
-                    command.Parameters.AddWithValue("@subjectId", subjectId);
-                    command.Parameters.AddWithValue("@grade", grade);
+                    command.Parameters.AddWithValue("@gradeId", gradeId);
+                    command.Parameters.AddWithValue("@gradeValue", gradeValue);
                     command.ExecuteNonQuery();
                 }
             }
@@ -74,28 +74,7 @@ namespace AS_practice.DataAccess
                 }
                 lecturerData.Add(students);
                 studentReader.Close();
-                /*
-                string gradeQuery = @"
-                    SELECT s.first_name, s.last_name, sb.subject_name, sg.grade_value 
-                    FROM subject_grades sg
-                    JOIN students s ON sg.student_id = s.student_id
-                    JOIN subjects sb ON sg.subject_id = sb.subject_id";
-                var gradeCommand = new MySqlCommand(gradeQuery, connection);
-                var gradeReader = gradeCommand.ExecuteReader();
-                List<Grades> grades = new List<Grades>();
-                while (gradeReader.Read())
-                {
-                    grades.Add(new Grades
-                    {
-                        FirstName = gradeReader.GetString("first_name"),
-                        LastName = gradeReader.GetString("last_name"),
-                        SubjectName = gradeReader.GetString("subject_name"),
-                        GradeValue = gradeReader.IsDBNull(3) ? (int?)null : gradeReader.GetInt32("grade_value")
-                    });
-                }
-                lecturerData.Add(grades);
-                gradeReader.Close();
-                */
+                
                 string gradeQuery = "SELECT grade_id, student_id, lecturer_course_id, grade_value FROM grades";
                 var gradeCommand = new MySqlCommand(gradeQuery, connection);
                 var gradeReader = gradeCommand.ExecuteReader();
@@ -113,22 +92,45 @@ namespace AS_practice.DataAccess
                 lecturerData.Add(grades);
                 gradeReader.Close();
                 
-                string subjectsQuery = @"
-                    SELECT subject_id, subject_name 
-                    FROM subjects";
-                var subjectsCommand = new MySqlCommand(subjectsQuery, connection);
-                var subjectsReader = subjectsCommand.ExecuteReader();
+                string subjectQuery = "SELECT subject_id, subject_name FROM subjects";
+                var subjectCommand = new MySqlCommand(subjectQuery, connection);
+                var subjectReader = subjectCommand.ExecuteReader();
                 List<Subjects> subjects = new List<Subjects>();
-                while (subjectsReader.Read())
+                while (subjectReader.Read())
                 {
                     subjects.Add(new Subjects
                     {
-                        SubjectId = subjectsReader.GetInt32("subject_id"),
-                        SubjectName = subjectsReader.GetString("subject_name")
+                        SubjectId = subjectReader.GetInt32("subject_id"),
+                        SubjectName = subjectReader.GetString("subject_name")
                     });
                 }
                 lecturerData.Add(subjects);
-                subjectsReader.Close();
+                subjectReader.Close();
+                
+                string categoryQuerry = @"
+                        SELECT category_id, category_name, weight
+                        FROM grade_categories";
+                
+                var categoryCommand = new MySqlCommand(categoryQuerry, connection);
+                var categoryReader = categoryCommand.ExecuteReader();
+                List<GradeCategories> categories = new List<GradeCategories>();
+                while (categoryReader.Read())
+                {
+                    categories.Add(new GradeCategories
+                    {
+                        CategoryId = categoryReader.IsDBNull(categoryReader.GetOrdinal("category_id")) 
+                            ? (int?)null 
+                            : categoryReader.GetInt32("category_id"),
+                        CategoryName = categoryReader.IsDBNull(categoryReader.GetOrdinal("category_name")) 
+                            ? null 
+                            : categoryReader.GetString("category_name"),
+                        Weight = categoryReader.IsDBNull(categoryReader.GetOrdinal("weight")) 
+                            ? (int?)null 
+                            : categoryReader.GetInt32("weight")
+                    });
+                }
+                lecturerData.Add(categories);
+                categoryReader.Close();
             }
             return lecturerData;
         }

@@ -18,6 +18,7 @@ namespace AS_practice
         private DataGridView _studentGridView;
         private DataGridView _gradeGridView;
         private DataGridView _subjectsGridView;
+        private DataGridView _categoryGridView;
 
         public LoadLecturerPage(LecturerManager lecturerManager)
         {
@@ -42,6 +43,8 @@ namespace AS_practice
             CreateDataGridView(new Point(1150, 30), ref _gradeGridView);
             CreateLabel("Subjects Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(500, 210));
             CreateDataGridView(new Point(500, 230), ref _subjectsGridView);
+            CreateLabel("Grades Categories Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(1150, 210));
+            CreateDataGridView(new Point(1150, 230), ref _categoryGridView);
             
             Controls.AddRange(_buttons.ToArray());
             Controls.AddRange(_labels.ToArray());
@@ -80,24 +83,25 @@ namespace AS_practice
                 _studentGridView.DataSource = (List<Student>)lecturerData[0];
                 _gradeGridView.DataSource = (List<Grade>)lecturerData[1];
                 _subjectsGridView.DataSource = (List<Subjects>)lecturerData[2];
+                _categoryGridView.DataSource = (List<GradeCategories>)lecturerData[3];
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                MessageBox.Show($"Error loading data: {ex.Message}\nStack Trace: {ex.StackTrace}");
             }
         }
 
         private void AddGradeButtonClick(object sender, EventArgs e)
         {
             string studentIdStr = UIManager.ShowPrompt("Enter Student ID:", "Add Grade");
-            string subjectIdStr = UIManager.ShowPrompt("Enter Subject ID:", "Add Grade");
+            string lecturerCourseIdStr = UIManager.ShowPrompt("Enter Lecturer Course ID:", "Add Grade");
+            string categoryIdStr = UIManager.ShowPrompt("Enter Category ID:", "Add Grade");
             string gradeValueStr = UIManager.ShowPrompt("Enter Grade Value:", "Add Grade");
 
-            if (int.TryParse(studentIdStr, out int studentId) &&
-                int.TryParse(subjectIdStr, out int subjectId) &&
-                int.TryParse(gradeValueStr, out int grade))
+            if (int.TryParse(studentIdStr, out int studentId) && int.TryParse(lecturerCourseIdStr, out int lecturerCourseId) &&
+                int.TryParse(categoryIdStr, out int categoryId) && int.TryParse(gradeValueStr, out int gradeValue))
             {
-                _lecturerManager.AddGrade(studentId, subjectId, grade);
+                _lecturerManager.AddGrade(studentId, lecturerCourseId, categoryId, gradeValue);
                 LoadData();
                 MessageBox.Show("Grade added successfully.");
             }
@@ -106,18 +110,20 @@ namespace AS_practice
                 MessageBox.Show("Invalid input.");
             }
         }
-
+        
         private void EditGradeButtonClick(object sender, EventArgs e)
         {
+            string gradeIdStr = UIManager.ShowPrompt("Enter Grade ID:", "Edit Grade");
             string studentIdStr = UIManager.ShowPrompt("Enter Student ID:", "Edit Grade");
-            string subjectIdStr = UIManager.ShowPrompt("Enter Subject ID:", "Edit Grade");
+            string lecturerCourseIdStr = UIManager.ShowPrompt("Enter Lecturer Course ID:", "Edit Grade");
+            string categoryIdStr = UIManager.ShowPrompt("Enter Category ID:", "Edit Grade");
             string newGradeValueStr = UIManager.ShowPrompt("Enter New Grade Value:", "Edit Grade");
 
-            if (int.TryParse(studentIdStr, out int studentId) &&
-                int.TryParse(subjectIdStr, out int subjectId) &&
-                int.TryParse(newGradeValueStr, out int grade))
+            if (int.TryParse(gradeIdStr, out int gradeId) && int.TryParse(studentIdStr, out int studentId) &&
+                int.TryParse(lecturerCourseIdStr, out int lecturerCourseId) && int.TryParse(categoryIdStr, out int categoryId) &&
+                int.TryParse(newGradeValueStr, out int gradeValue))
             {
-                _lecturerManager.EditGrade(studentId, subjectId, grade);
+                _lecturerManager.EditGrade(gradeId, gradeValue);
                 LoadData();
                 MessageBox.Show("Grade updated successfully.");
             }
