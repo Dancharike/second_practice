@@ -1,10 +1,12 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using AS_practice;
 using AS_practice.DataAccess;
 using AS_practice.FrontEnd;
 using AS_practice.Interface;
+using MySql.Data.MySqlClient;
 
 public class MainForm : Form
 {

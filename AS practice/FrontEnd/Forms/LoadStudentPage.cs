@@ -16,6 +16,7 @@ namespace AS_practice
         private readonly List<Label> _labels = new List<Label>();
         private readonly List<DataGridView> _gridViews = new List<DataGridView>();
         private DataGridView _coursesSubjectsGridView;
+        private DataGridView studentSubjectGradesGridView;
 
         public LoadStudentPage(StudentManager studentManager)
         {
@@ -33,6 +34,8 @@ namespace AS_practice
             
             CreateLabel("Course Subjects Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(500, 10));
             CreateDataGridView(new Point(500, 30), ref _coursesSubjectsGridView);
+            //CreateLabel("Student Grades Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(1150, 10));
+            //CreateDataGridView(new Point(1150, 10), ref studentSubjectGradesGridView);
             
             Controls.AddRange(_buttons.ToArray());
             Controls.AddRange(_labels.ToArray());
@@ -67,8 +70,10 @@ namespace AS_practice
             try
             {
                 var studentData = _studentManager.GetStudentData();
+                //var finalScores = _studentManager.GetStudentFinalScores(studentId);
                 
                 _coursesSubjectsGridView.DataSource = (List<CourseSubjects>)studentData[0];
+                //studentSubjectGradesGridView.DataSource = (List<StudentSubjectGrade>)studentData[1];
             }
             catch (Exception ex)
             {

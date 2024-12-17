@@ -134,6 +134,7 @@
         <Compile Include="Models\Admin.cs" />
         <Compile Include="Models\Course.cs" />
         <Compile Include="Models\CourseSubjects.cs" />
+        <Compile Include="Models\FinalScore.cs" />
         <Compile Include="Models\Grade.cs" />
         <Compile Include="Models\GradeCategories.cs" />
         <Compile Include="Models\Grades.cs" />
@@ -143,6 +144,8 @@
         <Compile Include="Models\LecturerSubjects.cs" />
         <Compile Include="Models\Student.cs" />
         <Compile Include="Models\StudentGroup.cs" />
+        <Compile Include="Models\StudentSubjectGrade.cs" />
+        <Compile Include="Models\StudentSubjects.cs" />
         <Compile Include="Models\Subjects.cs" />
         <Compile Include="Models\User.cs" />
         <Compile Include="Models\UserRoles.cs" />
