@@ -10,13 +10,11 @@ using MySql.Data.MySqlClient;
 
 public class MainForm : Form
 {
-    private IRole _role;
     private readonly UIManager _uiManager;
-    private string _selectedRole;
-    private DatabaseManager _database;
-    private AdminManager _admin;
-    private LecturerManager _lecturer;
-    private StudentManager _student;
+    private readonly DatabaseManager _database;
+    private readonly AdminManager _admin;
+    private readonly LecturerManager _lecturer;
+    private readonly StudentManager _student;
 
     public MainForm(string connectionString)
     {
@@ -31,13 +29,21 @@ public class MainForm : Form
         Height = 1080;
         StartPosition = FormStartPosition.CenterScreen;
         BackColor = Color.Black;
-        LoadRoleSelectionStage();
+        ShowLoginForm();
     }
-
-    private void LoadRoleSelectionStage()
+    
+    private void Panel_Paint(object sender, PaintEventArgs e)
+    {
+        var panel = sender as Panel;
+        using (Pen pen = new Pen(Color.White, 1))
+        {
+            e.Graphics.DrawRectangle(pen, 0, 0, panel.Width - 1, panel.Height - 1);
+        }
+    }
+    
+    private void ShowLoginForm()
     {
         Controls.Clear();
-        
         var panel = new Panel
         {
             Size = new Size(Width - 1500, Height - 500),
@@ -47,72 +53,23 @@ public class MainForm : Form
         };
         panel.Paint += Panel_Paint;
         Controls.Add(panel);
-        
-        var label = _uiManager.CreateLabel(
-            "Select Your Role:",
-            new Font("Arial", 16, FontStyle.Bold),
-            Color.White,
-            new Point((panel.Width - 200) / 2, 20)
-        );
-        panel.Controls.Add(label);
-        
-        CreateRoleButton(panel, new AdminRole(), 100);
-        CreateRoleButton(panel, new LecturerRole(), 250);
-        CreateRoleButton(panel, new StudentRole(), 400);
-    }
 
-    private void Panel_Paint(object sender, PaintEventArgs e)
-    {
-        var panel = sender as Panel;
-        using (Pen pen = new Pen(Color.Gray, 1))
-        {
-            e.Graphics.DrawRectangle(pen, 0, 0, panel.Width - 1, panel.Height - 1);
-        }
-    }
-
-    private void CreateRoleButton(Panel parent, IRole role, int yOffset)
-    {
-        var roleButton = _uiManager.CreateButton(
-            role.RoleName,
-            new Point((parent.Width - 100) / 2, yOffset),
-            (sender, e) =>
-            {
-                _selectedRole = role.RoleName;
-                ShowLoginForm(parent, role);
-            }
-        );
-        parent.Controls.Add(roleButton);
-    }
-    
-    private void ShowLoginForm(Panel parent, IRole role)
-    {
-        _role = role;
-        foreach (var control in parent.Controls.OfType<Button>())
-        {
-            control.Visible = false;
-        }
-        
-        var oldLabel = parent.Controls.OfType<Label>().FirstOrDefault(lbl => lbl.Text == "Select Your Role:");
-        if (oldLabel != null)
-        {
-            oldLabel.Visible = false;
-        }
-        
         var dataLabel = new Label
         {
             Text = "Data Entering:",
             AutoSize = true,
             Font = new Font("Arial", 16, FontStyle.Bold),
             ForeColor = Color.White,
-            Location = new Point((parent.Width - 200) / 2, 20)
+            Location = new Point((panel.Width - 200) / 2, 20)
         };
-        parent.Controls.Add(dataLabel);
-        AddLoginControls(parent, role.RoleName);
+        panel.Controls.Add(dataLabel);
+
+        AddLoginControls(panel);
     }
     
-    public void AddLoginControls(Panel parent, string selectedRole)
+    public void AddLoginControls(Panel parent)
     {
-        var descriptionLabel = _uiManager.CreateLabel($"You have entered as a {selectedRole}. Please enter your credentials", new Font("Arial", 10), Color.White, new Point(15, 75));
+        var descriptionLabel = _uiManager.CreateLabel($"Please enter your credentials", new Font("Arial", 10), Color.White, new Point(15, 75));
         parent.Controls.Add(descriptionLabel);
 
         // username
@@ -174,13 +131,6 @@ public class MainForm : Form
             }
         );
         parent.Controls.Add(loginButton);
-        
-        var backButton = _uiManager.CreateButton(
-            "Back",
-            new Point(245, 250),
-            (sender, e) => { LoadRoleSelectionStage(); }
-        );
-        parent.Controls.Add(backButton);
     }
     
     /// <summary>

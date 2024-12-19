@@ -6,7 +6,7 @@ namespace AS_practice.Models
     {
         public int GradeId { get; set; }
         public int StudentId { get; set; }
-        public int LecturerCourseId { get; set; }
+        public string SubjectName { get; set; }
         public int CategoryId { get; set; }
         public int GradeValue { get; set; }
     }

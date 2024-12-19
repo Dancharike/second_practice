@@ -12,7 +12,7 @@ namespace AS_practice
         {
             //var loginStage = new LoginStage(new UIManager(), this);
             //loginStage.LoadStage(mainForm, parent, this); // login stage load
-            mainForm.AddLoginControls(parent, "Admin");
+            mainForm.AddLoginControls(parent);
         }
     }
 }

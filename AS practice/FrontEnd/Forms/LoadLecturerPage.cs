@@ -96,14 +96,14 @@ namespace AS_practice
         private void AddGradeButtonClick(object sender, EventArgs e)
         {
             string studentIdStr = UIManager.ShowPrompt("Enter Student ID:", "Add Grade");
-            string lecturerCourseIdStr = UIManager.ShowPrompt("Enter Lecturer Course ID:", "Add Grade");
+            string subjectIdStr = UIManager.ShowPrompt("Enter Subject ID:", "Add Grade");
             string categoryIdStr = UIManager.ShowPrompt("Enter Category ID:", "Add Grade");
             string gradeValueStr = UIManager.ShowPrompt("Enter Grade Value:", "Add Grade");
 
-            if (int.TryParse(studentIdStr, out int studentId) && int.TryParse(lecturerCourseIdStr, out int lecturerCourseId) &&
+            if (int.TryParse(studentIdStr, out int studentId) && int.TryParse(subjectIdStr, out int subjectId) &&
                 int.TryParse(categoryIdStr, out int categoryId) && int.TryParse(gradeValueStr, out int gradeValue))
             {
-                _lecturerManager.AddGrade(studentId, lecturerCourseId, categoryId, gradeValue);
+                _lecturerManager.AddGrade(studentId, subjectId, categoryId, gradeValue);
                 LoadData();
                 MessageBox.Show("Grade added successfully.");
             }
@@ -116,14 +116,9 @@ namespace AS_practice
         private void EditGradeButtonClick(object sender, EventArgs e)
         {
             string gradeIdStr = UIManager.ShowPrompt("Enter Grade ID:", "Edit Grade");
-            string studentIdStr = UIManager.ShowPrompt("Enter Student ID:", "Edit Grade");
-            string lecturerCourseIdStr = UIManager.ShowPrompt("Enter Lecturer Course ID:", "Edit Grade");
-            string categoryIdStr = UIManager.ShowPrompt("Enter Category ID:", "Edit Grade");
             string newGradeValueStr = UIManager.ShowPrompt("Enter New Grade Value:", "Edit Grade");
 
-            if (int.TryParse(gradeIdStr, out int gradeId) && int.TryParse(studentIdStr, out int studentId) &&
-                int.TryParse(lecturerCourseIdStr, out int lecturerCourseId) && int.TryParse(categoryIdStr, out int categoryId) &&
-                int.TryParse(newGradeValueStr, out int gradeValue))
+            if (int.TryParse(gradeIdStr, out int gradeId) && int.TryParse(newGradeValueStr, out int gradeValue))
             {
                 _lecturerManager.EditGrade(gradeId, gradeValue);
                 LoadData();
