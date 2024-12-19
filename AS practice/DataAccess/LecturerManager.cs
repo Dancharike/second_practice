@@ -8,8 +8,10 @@ namespace AS_practice.DataAccess
 {
     public class LecturerManager : DatabaseBase, ILecturerManager
     {
-        public LecturerManager(string connectionString) : base(connectionString) {}
+        private readonly string _connectionString;
 
+        public LecturerManager(string connectionString) : base(connectionString) {}
+            
         public void AddGrade(int studentId, int lecturerCourseId, int categoryId, int gradeValue)
         {
             using (var connection = GetConnection())
@@ -48,7 +50,7 @@ namespace AS_practice.DataAccess
             }
         }
 
-        public List<object> GetLecturerData()
+        public List<object> GetLecturerData(int? lecturerId)
         {
             List<object> lecturerData = new List<object>();
 
@@ -92,8 +94,14 @@ namespace AS_practice.DataAccess
                 lecturerData.Add(grades);
                 gradeReader.Close();
                 
-                string subjectQuery = "SELECT subject_id, subject_name FROM subjects";
+                string subjectQuery = @"
+                        SELECT s.subject_id, s.subject_name 
+                        FROM subjects s
+                        JOIN lecturer_subjects ls ON s.subject_id = ls.subject_id
+                        WHERE ls.lecturer_id = @lecturerId";
+                
                 var subjectCommand = new MySqlCommand(subjectQuery, connection);
+                subjectCommand.Parameters.AddWithValue("@lecturerId", lecturerId);
                 var subjectReader = subjectCommand.ExecuteReader();
                 List<Subjects> subjects = new List<Subjects>();
                 while (subjectReader.Read())

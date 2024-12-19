@@ -11,6 +11,7 @@ namespace AS_practice
     public class LoadStudentPage : Form
     {
         private readonly StudentManager _studentManager;
+        private readonly int _roleSpecificId;
         private readonly UIManager _uiManager;
         private readonly List<Button> _buttons = new List<Button>();
         private readonly List<Label> _labels = new List<Label>();
@@ -18,9 +19,10 @@ namespace AS_practice
         private DataGridView _coursesSubjectsGridView;
         private DataGridView studentSubjectGradesGridView;
 
-        public LoadStudentPage(StudentManager studentManager)
+        public LoadStudentPage(StudentManager studentManager, int? roleSpecificId)
         {
             _studentManager = studentManager;
+            _roleSpecificId = roleSpecificId ?? 0;
             _uiManager = new UIManager();
             InitializeComponents();
             LoadData();

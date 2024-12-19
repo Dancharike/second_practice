@@ -110,14 +110,9 @@ public class MainForm : Form
         AddLoginControls(parent, role.RoleName);
     }
     
-    public void AddLoginControls(Panel parent, string role)
+    public void AddLoginControls(Panel parent, string selectedRole)
     {
-        var descriptionLabel = _uiManager.CreateLabel(
-            $"You have entered as a {role}. Please enter your credentials",
-            new Font("Arial", 10),
-            Color.White,
-            new Point(15, 75)
-        );
+        var descriptionLabel = _uiManager.CreateLabel($"You have entered as a {selectedRole}. Please enter your credentials", new Font("Arial", 10), Color.White, new Point(15, 75));
         parent.Controls.Add(descriptionLabel);
 
         // username
@@ -143,10 +138,7 @@ public class MainForm : Form
         };
         parent.Controls.Add(passwordField);
         
-        var loginButton = _uiManager.CreateButton(
-            "Login",
-            new Point((parent.Width - 100) / 2, 250),
-            (sender, e) =>
+        var loginButton = _uiManager.CreateButton("Login", new Point((parent.Width - 100) / 2, 250), (sender, e) =>
             {
                 if (string.IsNullOrWhiteSpace(usernameField.Text) || string.IsNullOrWhiteSpace(passwordField.Text))
                 {
@@ -154,29 +146,29 @@ public class MainForm : Form
                 }
                 else
                 {
-                    bool isValid = _database.ValidateUser(usernameField.Text, passwordField.Text, _selectedRole);
+                    var (isValid, role, roleSpecificId) = _database.ValidateUser(usernameField.Text, passwordField.Text);
                     if (isValid)
                     {
-                        MessageBox.Show($"{_selectedRole} logged in.");
-                        if (_selectedRole == "Admin")
+                        MessageBox.Show($"{role} logged in.");
+                        switch (role)
                         {
-                            LoadAdminPage adminPage = new LoadAdminPage(_admin);
-                            adminPage.Show();
-                        }
-                        else if (_selectedRole == "Lecturer")
-                        {
-                            LoadLecturerPage lecturerPage = new LoadLecturerPage(_lecturer);
-                            lecturerPage.Show();
-                        }
-                        else if (_selectedRole == "Student")
-                        {
-                            LoadStudentPage studentPage = new LoadStudentPage(_student);
-                            studentPage.Show();
+                            case "Admin":
+                                LoadAdminPage adminPage = new LoadAdminPage(_admin);
+                                adminPage.Show();
+                                break;
+                            case "Lecturer":
+                                LoadLecturerPage lecturerPage = new LoadLecturerPage(_lecturer, roleSpecificId);
+                                lecturerPage.Show();
+                                break;
+                            case "Student":
+                                //LoadStudentPage studentPage = new LoadStudentPage(_student, roleSpecificId);
+                                //studentPage.Show();
+                                break;
                         }
                     }
                     else
                     {
-                        MessageBox.Show("You are trying to log in with an incorrect role or credentials!");
+                        MessageBox.Show("Invalid credentials!");
                     }
                 }
             }

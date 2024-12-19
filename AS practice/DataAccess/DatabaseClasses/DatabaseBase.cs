@@ -4,7 +4,7 @@ namespace AS_practice.DataAccess
 {
     public abstract class DatabaseBase
     {
-        protected readonly string ConnectionString;
+        private readonly string ConnectionString;
 
         protected DatabaseBase(string connectionString)
         {

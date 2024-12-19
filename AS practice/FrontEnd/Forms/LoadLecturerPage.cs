@@ -12,6 +12,7 @@ namespace AS_practice
     {
         private readonly LecturerManager _lecturerManager;
         private readonly UIManager _uiManager;
+        private readonly int? _lecturerId;
         private readonly List<Button> _buttons = new List<Button>();
         private readonly List<Label> _labels = new List<Label>();
         private readonly List<DataGridView> _gridViews = new List<DataGridView>();
@@ -20,9 +21,10 @@ namespace AS_practice
         private DataGridView _subjectsGridView;
         private DataGridView _categoryGridView;
 
-        public LoadLecturerPage(LecturerManager lecturerManager)
+        public LoadLecturerPage(LecturerManager lecturerManager, int? lecturerId)
         {
             _lecturerManager = lecturerManager;
+            _lecturerId = lecturerId;
             _uiManager = new UIManager();
             InitializeComponents();
             LoadData();
@@ -78,7 +80,7 @@ namespace AS_practice
         {
             try
             {
-                var lecturerData = _lecturerManager.GetLecturerData();
+                var lecturerData = _lecturerManager.GetLecturerData(_lecturerId);
                 
                 _studentGridView.DataSource = (List<Student>)lecturerData[0];
                 _gradeGridView.DataSource = (List<Grade>)lecturerData[1];

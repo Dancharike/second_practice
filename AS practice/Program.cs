@@ -13,7 +13,6 @@ namespace AS_practice
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm(connectionString));
-            
         }
     }
 }
