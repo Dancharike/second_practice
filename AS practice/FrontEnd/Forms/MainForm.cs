@@ -1,12 +1,8 @@
-﻿using System;
-using System.Drawing;
-using System.Linq;
+﻿using System.Drawing;
 using System.Windows.Forms;
 using AS_practice;
 using AS_practice.DataAccess;
 using AS_practice.FrontEnd;
-using AS_practice.Interface;
-using MySql.Data.MySqlClient;
 
 public class MainForm : Form
 {
@@ -118,8 +114,8 @@ public class MainForm : Form
                                 lecturerPage.Show();
                                 break;
                             case "Student":
-                                //LoadStudentPage studentPage = new LoadStudentPage(_student, roleSpecificId);
-                                //studentPage.Show();
+                                LoadStudentPage studentPage = new LoadStudentPage(_student, roleSpecificId);
+                                studentPage.Show();
                                 break;
                         }
                     }

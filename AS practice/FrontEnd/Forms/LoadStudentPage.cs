@@ -1,53 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using AS_practice.DataAccess;
 using AS_practice.FrontEnd;
-using AS_practice.Models;
 
 namespace AS_practice
 {
     public class LoadStudentPage : Form
     {
         private readonly StudentManager _studentManager;
-        private readonly int _roleSpecificId;
+        private readonly int? _studentId;
         private readonly UIManager _uiManager;
-        private readonly List<Button> _buttons = new List<Button>();
         private readonly List<Label> _labels = new List<Label>();
         private readonly List<DataGridView> _gridViews = new List<DataGridView>();
-        private DataGridView _coursesSubjectsGridView;
-        private DataGridView studentSubjectGradesGridView;
+        private DataGridView _studentCourseDataGridView;
 
-        public LoadStudentPage(StudentManager studentManager, int? roleSpecificId)
+        public LoadStudentPage(StudentManager studentManager, int? studentId)
         {
             _studentManager = studentManager;
-            _roleSpecificId = roleSpecificId ?? 0;
+            _studentId = studentId;
             _uiManager = new UIManager();
             InitializeComponents();
             LoadData();
         }
-        
+
         private void InitializeComponents()
         {
             Text = "Student Panel";
             Size = new Size(1920, 1080);
             BackColor = Color.Black;
             
-            CreateLabel("Course Subjects Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(500, 10));
-            CreateDataGridView(new Point(500, 30), ref _coursesSubjectsGridView);
-            //CreateLabel("Student Grades Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(1150, 10));
-            //CreateDataGridView(new Point(1150, 10), ref studentSubjectGradesGridView);
+            CreateLabel("Student Grades Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(500, 310));
+            CreateDataGridView(new Point(500, 330), ref _studentCourseDataGridView);
             
-            Controls.AddRange(_buttons.ToArray());
             Controls.AddRange(_labels.ToArray());
             Controls.AddRange(_gridViews.ToArray());
-        }
-        
-        private void CreateButton(string text, Point location, EventHandler clickEvent)
-        {
-            var button = _uiManager.CreateButton(text, location, clickEvent);
-            _buttons.Add(button);
         }
 
         private void CreateLabel(string text, Font font, Color color, Point location)
@@ -71,15 +60,30 @@ namespace AS_practice
         {
             try
             {
-                var studentData = _studentManager.GetStudentData();
-                //var finalScores = _studentManager.GetStudentFinalScores(studentId);
-                
-                _coursesSubjectsGridView.DataSource = (List<CourseSubjects>)studentData[0];
-                //studentSubjectGradesGridView.DataSource = (List<StudentSubjectGrade>)studentData[1];
+                var studentGrades = _studentManager.GetStudentData(_studentId);
+
+                if (studentGrades.Count > 0)
+                {
+                    var dataTable = new DataTable();
+                    dataTable.Columns.Add("Student Name");
+                    dataTable.Columns.Add("Subject Name");
+                    dataTable.Columns.Add("Total Grade");
+
+                    foreach (var grade in studentGrades)
+                    {
+                        dataTable.Rows.Add(grade.StudentName, grade.SubjectName, grade.TotalGrade);
+                    }
+
+                    _studentCourseDataGridView.DataSource = dataTable;
+                }
+                else
+                {
+                    MessageBox.Show("No intel.");
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading data: {ex.Message}\nStack Trace: {ex.StackTrace}");
+                MessageBox.Show($"Error in loading data: {ex.Message}");
             }
         }
     }

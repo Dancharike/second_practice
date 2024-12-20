@@ -39,14 +39,14 @@ namespace AS_practice
             CreateButton("Add Grade", new Point(20, 400), AddGradeButtonClick);
             CreateButton("Edit Grade", new Point(20, 440), EditGradeButtonClick);
 
-            CreateLabel("Students Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(500, 10));
-            CreateDataGridView(new Point(500, 30), ref _studentGridView);
-            CreateLabel("Grades Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(1150, 10));
-            CreateDataGridView(new Point(1150, 30), ref _gradeGridView);
-            CreateLabel("Subjects Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(500, 210));
-            CreateDataGridView(new Point(500, 230), ref _subjectsGridView);
-            CreateLabel("Grades Categories Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(1150, 210));
-            CreateDataGridView(new Point(1150, 230), ref _categoryGridView);
+            CreateLabel("Students Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(500, 310));
+            CreateDataGridView(new Point(500, 330), ref _studentGridView);
+            CreateLabel("Grades Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(1150, 310));
+            CreateDataGridView(new Point(1150, 330), ref _gradeGridView);
+            CreateLabel("Subjects Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(500, 510));
+            CreateDataGridView(new Point(500, 530), ref _subjectsGridView);
+            CreateLabel("Grades Categories Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(1150, 510));
+            CreateDataGridView(new Point(1150, 530), ref _categoryGridView);
             
             Controls.AddRange(_buttons.ToArray());
             Controls.AddRange(_labels.ToArray());

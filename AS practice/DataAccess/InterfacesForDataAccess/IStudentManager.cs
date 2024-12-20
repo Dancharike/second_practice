@@ -5,6 +5,6 @@ namespace AS_practice.DataAccess.InterfacesForDataAccess
 {
     public interface IStudentManager
     {
-        List<StudentSubjectGrade> GetStudentGrades(int studentId);
+        List<StudentGrades> GetStudentData(int? studentId);
     }
 }

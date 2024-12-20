@@ -22,7 +22,6 @@ public class LoadAdminPage : Form
     private DataGridView _rolesGridView;
     private DataGridView _groupCoursesGridView;
     private DataGridView _subjectsGridView;
-    private DataGridView _coursesSubjectsGridView;
     private DataGridView _lecturerSubjectsGridView;
     
     public LoadAdminPage(AdminManager adminManager)
@@ -48,10 +47,10 @@ public class LoadAdminPage : Form
         CreateButton("Create Subject", new Point(20, 520), CreateSubjectButtonClick);
         CreateButton("Delete Subject", new Point(110, 520), DeleteSubjectButtonClick);
         CreateButton("Assign Student to Group", new Point(20, 560), AssignStudentToGroupButtonClick);
-        CreateButton("Assign Lecturer to Course", new Point(20, 600), AssignLecturerToCourseButtonClick);
-        CreateButton("Assign Group to Course", new Point(20, 640), AssignGroupToCourseButtonClick);
-        CreateButton("Assign Subjects to Lecturer", new Point(20, 680), AssignSubjectToLecturerButtonClick);
-
+        CreateButton("Assign Group to Course", new Point(20, 600), AssignGroupToCourseButtonClick);
+        CreateButton("Assign Subject to Lecturer", new Point(20, 640), AssignSubjectToLecturerButtonClick);
+        CreateButton("Assign Lecturer to Course", new Point(20, 680), AssignLecturerToCourseButtonClick);
+        
         CreateLabel("Users Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(500, 10));
         CreateDataGridView(new Point(500, 30), ref _usersGridView); // 1
         CreateLabel("Lecturers Table", new Font("Arial", 12, FontStyle.Bold), Color.White, new Point(1150, 10));
@@ -115,7 +114,7 @@ public class LoadAdminPage : Form
             //_gradesGridView.DataSource = (List<Grade>)adminData[5]; // admin do not need to see grades for no reason
             _usersGridView.DataSource = (List<User>)adminData[5];
             _rolesGridView.DataSource = (List<UserRoles>)adminData[6];
-            //_adminsGridView.DataSource = (List<Admin>)adminData[7]; // there is no any reason for what admin would need to see full list of admins, they can not even be deleted
+            //_adminsGridView.DataSource = (List<Admin>)adminData[7]; // there is no any reason for what admin would need to see full list of admins
             _groupCoursesGridView.DataSource = (List<GroupCourses>)adminData[7];
             _subjectsGridView.DataSource = (List<Subjects>)adminData[8];
             _lecturerSubjectsGridView.DataSource = (List<LecturerSubjects>)adminData[9];
